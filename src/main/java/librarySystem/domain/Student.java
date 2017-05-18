@@ -1,16 +1,20 @@
 package librarySystem.domain;
 
-import java.util.Date;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-/**
- * Created by 阿越 on 2017/5/16.
- */
-public class Student {
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+public class Student implements UserDetails {
     private String sno;
     private String sname;
     private String gender;
     private Date entryYear;
     private String password;
+
+    private List<? extends GrantedAuthority> authorities;
 
     public String getSno() {
         return sno;
@@ -44,8 +48,42 @@ public class Student {
         this.entryYear = entryYear;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<? extends GrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return sno;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {

@@ -9,6 +9,9 @@
         <result column="entryYear" property="entryYear" jdbcType="DATE"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
     </resultMap>
+    <select id="find" resultType="librarySystem.domain.Student">
+        SELECT * FROM student WHERE sno=#{sno}
+    </select>
 
 
 </mapper>

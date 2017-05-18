@@ -1,8 +1,5 @@
 package librarySystem.domain;
 
-/**
- * Created by 阿越 on 2017/5/16.
- */
 public class Student_Permission {
     private int pid;
     private String sno;

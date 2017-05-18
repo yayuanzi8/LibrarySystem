@@ -8,6 +8,11 @@
         <result column="gender" property="gender" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
     </resultMap>
+    <select id="find" resultType="librarySystem.domain.Teacher">
+        SELECT *
+        FROM teacher
+        WHERE tid = #{tid};
+    </select>
 
 
 </mapper>
