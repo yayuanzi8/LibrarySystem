@@ -16,7 +16,7 @@
     <input type="password" name="password" placeholder="请输入密码" value="gaoyisanban67"/><br/>
     <input type="radio" name="role" value="teacher"/>教师
     <input type="radio" name="role" value="student" checked/>学生<br/>
-    <input id="rememberMe" name="remember-me" type="checkbox"/>记住我<br/>
+    <input id="rememberMe" name="remember-me" type="checkbox"/>记住我
     <input type="submit" value="提交"/>
 </form>
 </body>

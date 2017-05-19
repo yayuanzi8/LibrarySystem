@@ -1,8 +1,5 @@
 package librarySystem.domain;
 
-/**
- * Created by 阿越 on 2017/5/16.
- */
 public class Permission {
     private Integer pid;
     private String pname;

@@ -28,6 +28,6 @@ public class MyBatisTest {
     @Test
     public void testFindBooks(){
         List<Book> bookList = bookDao.getAllBooks();
-        System.out.println(bookList.get(0).getAuthor());
+        System.out.println(bookList.get(0));
     }
 }

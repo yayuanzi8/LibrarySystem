@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <http pattern="/static/**" security="none"/>
+
+    <beans:bean id="authenticationEntryPoint"
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg value="/user/login"/>
+    </beans:bean>
+
+    <http auto-config="false" entry-point-ref="authenticationEntryPoint">
+        <intercept-url pattern="/" access="permitAll"/>
+        <intercept-url pattern="/user/login" access="permitAll"/>
+        <remember-me remember-me-parameter="remember-me"/>
+        <logout logout-url="/user/logout" logout-success-url="/"/>
+    </http>
+
+    <authentication-manager id="authenticationManager">
+        <authentication-provider>
+
+        </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>

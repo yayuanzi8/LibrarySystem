@@ -1,7 +1,5 @@
 package librarySystem.config;
 
-import librarySystem.security.StudentDetailsService;
-import librarySystem.security.TeacherDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         });
     }*/
 
-    @Bean
+    /*@Bean
     protected StudentDetailsService userDetailsService() {
         return new StudentDetailsService();
     }
@@ -71,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 return aClass.isInstance(UserDetails.class);
             }
         };
-    }
+    }*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -83,10 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         characterEncodingFilter.setForceResponseEncoding(true);
         http.addFilterBefore(characterEncodingFilter, CsrfFilter.class);
         //允许任何人访问登录界面
-        http.authorizeRequests().antMatchers("/user/login").access("!isAuthenticated()");
+        http.authorizeRequests().antMatchers("/user/login").permitAll();
         //关闭跨站请求攻击防护
         http.csrf().disable();
         //启用rememberMe功能
-        http.rememberMe().tokenValiditySeconds(604800).key("librarySystemUser");
+        http.rememberMe().rememberMeParameter("remember-me").tokenValiditySeconds(604800).key("librarySystemUser");
     }
 }

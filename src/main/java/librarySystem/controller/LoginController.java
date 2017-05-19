@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+//@Controller
 @RequestMapping("/user")
 public class LoginController {
 
@@ -31,10 +31,10 @@ public class LoginController {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, String> login(String no, String password, String role, HttpSession session) {
-        System.out.println(no + "=" + password + "=" + role);
+    Map<String, String> login(String cred_num, String password, String role, HttpSession session) {
+        System.out.println(cred_num + "=" + password + "=" + role);
         Map<String, String> msgMap = new HashMap<>();
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(no, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(cred_num, password);
         try {
             if (role.equals("teacher")) {
                 Authentication authentication = teacherAuthenticationProvider.authenticate(authenticationToken);
