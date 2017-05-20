@@ -1,55 +1,65 @@
 package librarySystem.controller;
 
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import librarySystem.util.CodeUtil;
+import librarySystem.util.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Map;
 
-//@Controller
+@Controller
 @RequestMapping("/user")
 public class LoginController {
 
-    @Resource(name = "studentAuthenticationProvider")
-    private AuthenticationProvider studentAuthenticationProvider;
-    @Resource(name = "teacherAuthenticationProvider")
-    private AuthenticationProvider teacherAuthenticationProvider;
+    private final CodeUtil codeUtil;
+
+    @Autowired
+    public LoginController(CodeUtil codeUtil) {
+        this.codeUtil = codeUtil;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String toLoginForm() {
         return "user/login";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
+    @RequestMapping(value = "/loginSuccess", method = RequestMethod.GET)
     public @ResponseBody
-    Map<String, String> login(String cred_num, String password, String role, HttpSession session) {
-        System.out.println(cred_num + "=" + password + "=" + role);
-        Map<String, String> msgMap = new HashMap<>();
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(cred_num, password);
-        try {
-            if (role.equals("teacher")) {
-                Authentication authentication = teacherAuthenticationProvider.authenticate(authenticationToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            } else {
-                Authentication authentication = studentAuthenticationProvider.authenticate(authenticationToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            }
-        } catch (AuthenticationException e) {
-            msgMap.put("message", "error");
-            return msgMap;
+    Map<String, Object> loginSuccess() {
+        return Result.ok();
+    }
+
+    @RequestMapping(value = "/loginFail", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> loginFail(HttpSession session) {
+        AuthenticationException exception = (AuthenticationException) session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
+        Map<String,Object> map = Result.error();
+        String message = exception.getMessage();
+        if (message.equals("Bad credentials")){
+            message = "用户名或密码错误";
         }
-        msgMap.put("message", "ok");
-        return msgMap;
+        map.put("details",message);
+        System.out.println(message);
+        return map;
+    }
+
+    @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
+    public ModelAndView generateCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setDateHeader("Expires", 0);
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setContentType("image/jpeg");
+        codeUtil.makeValidateImage(request, response);
+        return null;
     }
 }

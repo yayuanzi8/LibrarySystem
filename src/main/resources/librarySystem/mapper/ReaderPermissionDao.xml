@@ -5,4 +5,9 @@
         <id property="pid" jdbcType="INTEGER" column="pid"/>
         <id property="credNum" column="cred_num" jdbcType="CHAR"/>
     </resultMap>
+    <select id="findByCredNum" resultType="librarySystem.domain.ReaderPermission">
+        SELECT *
+        FROM reader_permission
+        WHERE cred_num = #{credNum};
+    </select>
 </mapper>

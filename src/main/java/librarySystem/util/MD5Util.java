@@ -9,7 +9,7 @@ public class MD5Util {
 
     public static String encode(String password) {
         password = password + SALT;
-        MessageDigest md5 = null;
+        MessageDigest md5;
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (Exception e) {

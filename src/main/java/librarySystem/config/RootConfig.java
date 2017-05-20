@@ -1,17 +1,23 @@
 package librarySystem.config;
 
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import librarySystem.util.CodeUtil;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = {"librarySystem"}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,
@@ -61,5 +67,22 @@ public class RootConfig {
         configurer.setBasePackage("librarySystem.dao");
         configurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
         return configurer;
+    }
+
+    @Bean
+    public CodeUtil codeUtil(){
+        return new CodeUtil();
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setHost("smtp.163.com");
+        sender.setUsername("yayuanzi8@163.com");
+        sender.setPassword("gaoyisanban67hao");
+        Properties properties = new Properties();
+        properties.setProperty("mail.smtp.auth","true");
+        sender.setJavaMailProperties(properties);
+        return sender;
     }
 }
