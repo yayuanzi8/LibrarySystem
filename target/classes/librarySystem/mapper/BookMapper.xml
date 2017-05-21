@@ -23,4 +23,9 @@
         SELECT *
         FROM book
     </select>
+    <select id="findByBookNO" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookNO = #{bookNO};
+    </select>
 </mapper>

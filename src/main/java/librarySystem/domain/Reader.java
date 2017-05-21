@@ -17,7 +17,16 @@ public class Reader implements UserDetails {
     private String readerType;
     private Integer cumAvailNum;
     private String email;
+    private String currentBorrowNum;
     private Set<? extends  GrantedAuthority> authorities;
+
+    public String getCurrentBorrowNum() {
+        return currentBorrowNum;
+    }
+
+    public void setCurrentBorrowNum(String currentBorrowNum) {
+        this.currentBorrowNum = currentBorrowNum;
+    }
 
     public String getCredNum() {
         return credNum;

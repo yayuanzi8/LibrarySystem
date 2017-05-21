@@ -23,7 +23,7 @@ public class CodeUtil {
     /**
      * 生成验证码字符串
      */
-    private char[] getValidateString() {
+    public char[] getValidateString() {
         char[] c = new char[stringNum];
         for (int i = 0; i < stringNum; i++) {
             int offset = random.nextInt(3);

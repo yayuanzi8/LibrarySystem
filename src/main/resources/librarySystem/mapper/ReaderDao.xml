@@ -11,13 +11,23 @@
         <result column="reader_type" property="readerType" jdbcType="VARCHAR"/>
         <result column="cum_avail_num" property="cumAvailNum" jdbcType="INTEGER"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="current_borrow_num" property="currentBorrowNum" jdbcType="INTEGER"/>
     </resultMap>
+    <update id="update" parameterType="librarySystem.domain.Reader">
+        UPDATE reader
+        SET name = #{reader.name},password = #{reader.password},
+            start_time = #{reader.startTime},end_time=#{reader.endTime},
+            max_available=#{reader.maxAvailable},reader_type=#{reader.readerType},
+            cum_avail_num=#{reader.cumAvailNum},email=#{reader.email} where cred_num=#{reader.credNum}
+    </update>
     <select id="findByCredNum" resultMap="baseResultMap">
         SELECT *
         FROM reader
         WHERE cred_num = #{cred_num}
     </select>
     <select id="findByEmail" resultMap="baseResultMap">
-        SELECT * FROM reader WHERE email=#{email}
+        SELECT *
+        FROM reader
+        WHERE email = #{email}
     </select>
 </mapper>

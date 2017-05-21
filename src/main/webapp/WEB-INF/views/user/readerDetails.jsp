@@ -43,11 +43,14 @@
     </style>
 </head>
 <body>
-<div style="background: url('/static/images/library.jpg');height: 30%"></div>
+<div style="background: url('${pageContext.request.contextPath}/static/images/library.jpg');height: 40%"></div>
 <ul class="layui-nav">
-    <li class="layui-nav-item"><a href="">证件信息</a></li>
-    <li class="layui-nav-item"><a href="">借阅历史</a></li>
-    <li class="layui-nav-item"><a href="">当前借阅</a>
+    <li class="layui-nav-item layui-this"><a href="${pageContext.request.contextPath}/reader/${reader.credNum}">证件信息</a>
+    </li>
+    <li class="layui-nav-item"><a href="${pageContext.request.contextPath}/reader/history/${reader.credNum}">借阅历史</a>
+    </li>
+    <li class="layui-nav-item"><a
+            href="${pageContext.request.contextPath}/reader/currentBorrow/${reader.credNum}">当前借阅</a>
     </li>
 </ul>
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
@@ -131,22 +134,48 @@
     </form>
 </div>
 
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <legend>修改密码</legend>
+</fieldset>
+<div class="layui-field-box">
+    <form id="updatePasswordForm" class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">旧密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="oldPassword"
+                       lay-verify="required|oldPassword"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">旧密码必须填写</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="newPassword" id="newPassword" lay-verify="required|newPassword"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">新密码必须填写</div>
+        </div>
+        <div class="layui-form-item">
+            <div style="text-align: left" class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="updatePassword" style="background-color: #5FB878">修改
+                </button>
+                <button type="reset" class="layui-btn layui-btn-primary" style="">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/static/layui/layui.js"></script>
-<script type="text/javascript">
-    layui.use('element', function () {
-        var element = layui.element(); //导航的hover效果、二级菜单等功能，需要依赖element模块
-
-        //监听导航点击
-        element.on('nav(demo)', function (elem) {
-            layer.msg(elem.text());
-        });
-    });
-</script>
+<script src="${pageContext.request.contextPath}/static/reader_common.js"></script>
 <script>
     //Demo
     layui.use('form', function () {
-        var form = layui.form();
+        var form = layui.form(),
+            layer = layui.layer;
 
         form.verify({
             oldEmail: [/\w+@\w+\.\w+/, "邮箱格式必须是X@X.X"],
@@ -160,7 +189,23 @@
 
         //监听提交
         form.on('submit(update)', function (data) {
-            layer.msg(JSON.stringify(data.field));
+            $.ajax({
+                url: "${pageContext.request.contextPath}/reader/updateEmail",
+                method: "post",
+                processData: false,
+                data: "newEmail=" + data.field.newEmail + "&captcha=" + data.field.captcha,
+                dataType: "json",
+                success: function (response) {
+                    var message = response.message;
+                    if (message === "ok") {
+                        window.location = window.location;
+                    } else if (message === "systemError") {
+                        layer.msg("系统出错！请稍后再试！", {icon: 5});
+                    } else if (message === "captchaError") {
+                        layer.msg("验证码错误！", {icon: 5});
+                    }
+                }
+            });
             return false;
         });
     });
@@ -179,7 +224,7 @@
         $getCaptchaBtn.prop("disabled", "disabled");
         setTimeout(function () {
             $getCaptchaBtn.text("获取验证码");
-            $getCaptchaBtn.removeProp("disabled", "disabled");
+            $getCaptchaBtn.prop("disabled", false);
         }, 60000);
         $.ajax({
             url: "${pageContext.request.contextPath}/sendEmail",
@@ -188,11 +233,16 @@
             dataType: "json",
             data: "email=" + newEmail,
             success: function (response) {
-
-            }
-            ,
-            error: function () {
-
+                var message = response.message;
+                if (message === "emailPatternError") {
+                    layer.msg("邮箱格式必须是X@X.X", {icon: 5});
+                    $getCaptchaBtn.text("获取验证码");
+                    $getCaptchaBtn.prop("disabled", false);
+                } else if (message === "emailExistedError") {
+                    layer.msg("邮箱已被使用！", {icon: 5});
+                    $getCaptchaBtn.text("获取验证码");
+                    $getCaptchaBtn.prop("disabled", false);
+                }
             }
         });
     });

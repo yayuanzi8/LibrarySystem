@@ -9,7 +9,7 @@
     你还没登陆！<a href="${pageContext.request.contextPath}/user/login">登陆</a>
 </sst:authorize>
 <sst:authorize access="isAuthenticated()">
-    <sst:authentication property="principal.username"/><br/>
+    <sst:authentication property="principal.name"/><br/>
     <sst:authentication property="principal.email"/><br/>
     <sst:authentication property="principal.readerType"/><br/>
     <a href="${pageContext.request.contextPath}/user/logout">注销</a>
