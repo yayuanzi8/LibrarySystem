@@ -46,6 +46,7 @@
     <p style="color:red;margin: 20px auto;width:80%;">当前借阅(${reader.currentBorrowNum})/最大借阅(${reader.maxAvailable})</p>
     <table style="width: 80%;margin: 20px auto;" class="layui-table" lay-skin="line">
         <tr>
+            <th>条形码</th>
             <th>中图法编号</th>
             <th>书名</th>
             <th>作者</th>
@@ -57,6 +58,7 @@
         </tr>
         <c:forEach items="${historyList}" var="history">
             <tr>
+                <td>${history.barCode}</td>
                 <td>${history.cnum}${history.bookNO}</td>
                 <td>${history.bookName}</td>
                 <td>${history.author}</td>
@@ -71,7 +73,7 @@
                         <button disabled="disabled" class="layui-bg-green cannotBorrow">不可续借</button>
                     </c:if>
                     <c:if test="${history.status.equals('借阅中')}">
-                        <button class="layui-bg-blue canBorrow" onclick="renew('${history.bookNO}',this)">续借</button>
+                        <button class="layui-bg-blue canBorrow" onclick="renew('${history.barCode}',this)">续借</button>
                     </c:if>
                     <c:if test="${history.status.equals('超期')}">
                         <button class="layui-btn-danger overtime">超期</button>
@@ -91,9 +93,9 @@
         var $ = layui.jquery;
         layer = layui.layer; //独立版的layer无需执行这一句
     });
-    function renew(bookNO, btn) {
+    function renew(barCode, btn) {
         $.ajax({
-            url: "${pageContext.request.contextPath}/reader/renew/" + bookNO,
+            url: "${pageContext.request.contextPath}/reader/renew/" + barCode,
             method: "post",
             success: function (response) {
                 var message = response.message;

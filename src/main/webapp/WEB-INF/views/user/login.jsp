@@ -94,7 +94,6 @@
             if (rememberMe) {
                 postData += "&remember-me=" + rememberMe;
             }
-            alert(rememberMe);
             $.ajax({
                 url: "${pageContext.request.contextPath}/user/logon",
                 data: postData,

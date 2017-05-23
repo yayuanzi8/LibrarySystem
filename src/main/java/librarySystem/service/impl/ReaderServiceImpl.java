@@ -7,6 +7,7 @@ import librarySystem.domain.Book;
 import librarySystem.domain.Reader;
 import librarySystem.domain.ReaderBook;
 import librarySystem.service.ReaderService;
+import librarySystem.util.ReaderUtil;
 import librarySystem.webDomain.ReaderBorrowHistory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class
-ReaderServiceImpl implements ReaderService {
+public class ReaderServiceImpl implements ReaderService {
 
     private final ReaderDao readerDao;
     private final ReaderBookDao readerBookDao;
@@ -53,7 +53,7 @@ ReaderServiceImpl implements ReaderService {
         List<ReaderBorrowHistory> histories = new ArrayList<>();
         for (ReaderBook readerBook : readerBooks) {
             Book book = bookDao.findByBookNO(readerBook.getBookNO());
-            ReaderBorrowHistory history = extractBorrowHistory(readerBook, book);
+            ReaderBorrowHistory history = ReaderUtil.extractBorrowHistory(readerBook, book);
             histories.add(history);
         }
         return histories;
@@ -65,23 +65,10 @@ ReaderServiceImpl implements ReaderService {
         List<ReaderBorrowHistory> histories = new ArrayList<>();
         for (ReaderBook readerBook : readerBookList) {
             Book book = bookDao.findByBookNO(readerBook.getBookNO());
-            ReaderBorrowHistory history = extractBorrowHistory(readerBook,book);
+            ReaderBorrowHistory history = ReaderUtil.extractBorrowHistory(readerBook, book);
             histories.add(history);
         }
         return histories;
     }
 
-    private ReaderBorrowHistory extractBorrowHistory(ReaderBook readerBook, Book book) {
-        ReaderBorrowHistory history = new ReaderBorrowHistory();
-        history.setBookNO(readerBook.getBookNO());
-        history.setCredNum(readerBook.getCredNum());
-        history.setReturnDate(readerBook.getReturnDate());
-        history.setBorrowDate(readerBook.getBorrowDate());
-        history.setStatus(readerBook.getStatus());
-        history.setBookName(book.getBookName());
-        history.setAuthor(book.getAuthor());
-        history.setCnum(book.getCnum());
-        history.setStoreAddress(book.getStoreAddress());
-        return history;
-    }
 }

@@ -3,8 +3,6 @@ package librarySystem.domain;
 public class Book {
     private String bookNO;
     private String bookName;
-    private Integer collectionNum;
-    private Integer borrowedNum;
     private String author;
     private String press;
     private String translator;
@@ -104,22 +102,6 @@ public class Book {
         this.bookName = bookName;
     }
 
-    public Integer getCollectionNum() {
-        return collectionNum;
-    }
-
-    public void setCollectionNum(Integer collectionNum) {
-        this.collectionNum = collectionNum;
-    }
-
-    public Integer getBorrowedNum() {
-        return borrowedNum;
-    }
-
-    public void setBorrowedNum(Integer borrowedNum) {
-        this.borrowedNum = borrowedNum;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -133,8 +115,6 @@ public class Book {
         return "Book{" +
                 "bookNO='" + bookNO + '\'' +
                 ", bookName='" + bookName + '\'' +
-                ", collectionNum=" + collectionNum +
-                ", borrowedNum=" + borrowedNum +
                 ", author='" + author + '\'' +
                 ", press='" + press + '\'' +
                 ", translator='" + translator + '\'' +

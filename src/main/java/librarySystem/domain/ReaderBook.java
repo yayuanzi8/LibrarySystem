@@ -4,10 +4,19 @@ import java.util.Date;
 
 public class ReaderBook {
     private String credNum;
-    private String bookNO;
+    private String barCode;
     private Date returnDate;
     private Date borrowDate;
     private String status;
+    private String bookNO;
+
+    public String getBookNO() {
+        return bookNO;
+    }
+
+    public void setBookNO(String bookNO) {
+        this.bookNO = bookNO;
+    }
 
     public String getCredNum() {
         return credNum;
@@ -17,12 +26,12 @@ public class ReaderBook {
         this.credNum = credNum;
     }
 
-    public String getBookNO() {
-        return bookNO;
+    public String getBarCode() {
+        return barCode;
     }
 
-    public void setBookNO(String bookNO) {
-        this.bookNO = bookNO;
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
     }
 
     public Date getReturnDate() {

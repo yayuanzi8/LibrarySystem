@@ -9,4 +9,6 @@ public interface BookDao {
     List<Book> getAllBooks();
 
     Book findByBookNO(@Param("bookNO") String bookNO);
+
+    List<Book> findByBookNameHazily(@Param("bookName") String bookName);
 }

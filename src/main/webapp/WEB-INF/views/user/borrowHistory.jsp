@@ -24,6 +24,7 @@
     <table style="width: 80%;margin: 20px auto;" class="layui-table" lay-skin="line">
         <thead>
         <tr>
+            <th>条形码</th>
             <th>中图法编号</th>
             <th>书名</th>
             <th>作者</th>
@@ -54,6 +55,7 @@
                         for (var i = 0; i < historyList.length; i++) {
                             var history = historyList[i];
                             var tr = $("<tr></tr>");
+                            var td0 = $("<td>" + (history.barCode) + "</td>");
                             var td1 = $("<td>" + (history.cnum + history.bookNO) + "</td>");
                             var td2 = $("<td>" + history.bookName + "</td>");
                             var td3 = $("<td>" + history.author + "</td>");
@@ -61,6 +63,7 @@
                             var td5 = $("<td>" + new Date(history.returnDate).Format("yyyy-MM-dd") + "</td>");
                             var td6 = $("<td>" + history.storeAddress + "</td>");
                             var td7 = $("<td>"+history.status+"</td>");
+                            td0.appendTo(tr);
                             td1.appendTo(tr);
                             td2.appendTo(tr);
                             td3.appendTo(tr);

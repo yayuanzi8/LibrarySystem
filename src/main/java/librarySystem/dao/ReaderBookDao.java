@@ -3,6 +3,7 @@ package librarySystem.dao;
 import librarySystem.domain.ReaderBook;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ReaderBookDao {
@@ -17,7 +18,18 @@ public interface ReaderBookDao {
 
     List<ReaderBook> findBorrowing(@Param("credNum") String credNum);
 
-    ReaderBook findByCredNumAndBookNO(@Param("credNum") String credNum, @Param("bookNO") String bookNO);
 
     void update(@Param("readerBook") ReaderBook readerBook);
+
+    ReaderBook findByCredNumAndBarCode(@Param("credNum") String credNum, @Param("barCode") String barCode);
+
+    Integer findOverTimeBorrowedBooksCount(@Param("today") Date today);
+
+    List<ReaderBook> findOverTimeBooks(@Param("start") Integer start, @Param("itemNumEveryPage") Integer itemNumEveryPage, @Param("today") Date today);
+
+    Integer findCountByBookNO(@Param("bookNOS") String[] bookNOS);
+
+    List<ReaderBook> findByBookNOS(@Param("bookNOS") List<String> bookNOS);
+
+    List<ReaderBook> findOverTimeBorrowedBooksByBookNO(@Param("bookNO") String bookNO);
 }

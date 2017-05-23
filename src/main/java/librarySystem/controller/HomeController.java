@@ -3,11 +3,13 @@ package librarySystem.controller;
 import librarySystem.domain.Reader;
 import librarySystem.service.ReaderService;
 import librarySystem.util.CodeUtil;
+import librarySystem.util.ReaderUtil;
 import librarySystem.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,10 +32,16 @@ public class HomeController {
         this.codeUtil = codeUtil;
     }
 
-
     @RequestMapping(method = RequestMethod.GET, value = "/")
     public String index() {
         return "index";
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/admin")
+    public String toAdmin(Model model,HttpSession session){
+        Reader reader = readerService.findByCredNum(ReaderUtil.getUserFromSecurityContext(session).getCredNum());
+        model.addAttribute(reader);
+        return "user/admin";
     }
 
     @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)

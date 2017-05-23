@@ -7,6 +7,8 @@ import librarySystem.util.ReaderUtil;
 import librarySystem.util.Result;
 import librarySystem.webDomain.ReaderBorrowHistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +24,13 @@ public class ReaderController {
 
     private final ReaderService readerService;
     private final ReaderBookService readerBookService;
+    private final MailSender mailSender;
 
     @Autowired
-    public ReaderController(ReaderService readerService, ReaderBookService readerBookService) {
+    public ReaderController(ReaderService readerService, ReaderBookService readerBookService, MailSender mailSender) {
         this.readerService = readerService;
         this.readerBookService = readerBookService;
+        this.mailSender = mailSender;
     }
 
 
@@ -51,8 +55,6 @@ public class ReaderController {
             Reader reader = readerService.findByCredNum(ReaderUtil.getUserFromSecurityContext(session).getCredNum());
             reader.setEmail(newEmail);
             readerService.update(reader);
-            System.out.println(newEmail);
-            System.out.println(captcha);
             return Result.ok();
         } catch (Exception e) {
             Map<String, Object> map = Result.error();
@@ -78,7 +80,7 @@ public class ReaderController {
             Map<String, Object> map = Result.ok();
             map.put("historyList", historyList);
             return map;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return Result.error();
         }
     }
@@ -93,11 +95,28 @@ public class ReaderController {
         return "user/currentBorrow";
     }
 
-    @RequestMapping(value = "/renew/{bookNO:.+}", method = RequestMethod.POST)
+    @RequestMapping(value = "/renew/{barCode:.+}", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, Object> renewBook(@PathVariable("bookNO") String bookNO,HttpSession session) {
+    Map<String, Object> renewBook(@PathVariable("barCode") String barCode, HttpSession session) {
         try {
-            readerBookService.renew(ReaderUtil.getUserFromSecurityContext(session).getCredNum(),bookNO);
+            readerBookService.renew(ReaderUtil.getUserFromSecurityContext(session).getCredNum(), barCode);
+            return Result.ok();
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/reminder/{credNum}/{bookName:.+}", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> reminder(@PathVariable("credNum") String credNum, @PathVariable("bookName") String bookName) {
+        try {
+            Reader reader = readerService.findByCredNum(credNum);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("yayuanzi8@163.com");
+            message.setTo(reader.getEmail());
+            message.setSubject("仲恺农业工程学院超期借书催还通知");
+            message.setText("您好！[" + reader.getName() + "]，您在ZHKU大学借阅的[" + bookName + "]已超期！请尽快到图书馆归还！");
+            mailSender.send(message);
             return Result.ok();
         }catch (Exception e){
             return Result.error();

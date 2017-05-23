@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class ReaderBorrowHistory {
     private String credNum;
+    private String barCode;
     private String bookNO;
     private Date returnDate;
     private Date borrowDate;
@@ -12,6 +13,14 @@ public class ReaderBorrowHistory {
     private String author;
     private String cnum;
     private String storeAddress;
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
+    }
 
     public String getCredNum() {
         return credNum;

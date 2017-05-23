@@ -13,6 +13,9 @@
     <sst:authentication property="principal.email"/><br/>
     <sst:authentication property="principal.readerType"/><br/>
     <a href="${pageContext.request.contextPath}/user/logout">注销</a>
+    <sst:authorize access="hasAuthority('reader:admin')">
+        <a href="${pageContext.request.contextPath}/admin">管理员界面</a>
+    </sst:authorize>
 </sst:authorize>
 </body>
 </html>

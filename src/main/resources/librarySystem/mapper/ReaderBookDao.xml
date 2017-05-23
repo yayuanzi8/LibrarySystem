@@ -2,8 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="librarySystem.dao.ReaderBookDao">
     <resultMap id="baseResultMap" type="librarySystem.domain.ReaderBook">
-        <id property="bookNO" column="bookNO" jdbcType="VARCHAR"/>
+        <id property="barCode" column="barCode" jdbcType="VARCHAR"/>
         <id property="credNum" column="cred_num" jdbcType="CHAR"/>
+        <result property="bookNO" column="bookNO" jdbcType="VARCHAR"/>
         <result property="returnDate" column="return_date" jdbcType="DATE"/>
         <result property="borrowDate" column="borrow_date" jdbcType="DATE"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
@@ -11,7 +12,7 @@
     <update id="update">
         UPDATE reader_book
         SET return_date = #{readerBook.returnDate}, borrow_date = #{readerBook.borrowDate},
-            status= #{readerBook.status}
+            status      = #{readerBook.status}
         WHERE cred_num = #{readerBook.credNum} AND bookNO = #{readerBook.bookNO}
     </update>
     <select id="findByCredNum" resultMap="baseResultMap">
@@ -29,12 +30,48 @@
     <select id="findBorrowing" resultMap="baseResultMap">
         SELECT *
         FROM reader_book
-        WHERE cred_num = #{credNum} AND status IN ('借阅中', '续借中')
+        WHERE cred_num = #{credNum} AND status IN ('借阅中', '续借中', '超期')
         ORDER BY borrow_date DESC
     </select>
-    <select id="findByCredNumAndBookNO" resultMap="baseResultMap">
+    <select id="findByCredNumAndBarCode" resultMap="baseResultMap">
         SELECT *
         FROM reader_book
-        WHERE cred_num = #{credNum} AND bookNO = #{bookNO};
+        WHERE cred_num = #{credNum} AND barCode = #{barCode}
+    </select>
+    <select id="findOverTimeBorrowedBooksCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader_book
+        WHERE return_date &lt; #{today}
+              AND status = '超期'
+    </select>
+    <select id="findOverTimeBooks" resultMap="baseResultMap">
+        SELECT *
+        FROM reader_book
+        WHERE return_date &lt; #{today}
+              AND status = '超期'
+        ORDER BY return_date DESC
+        LIMIT #{start}, #{itemNumEveryPage};
+    </select>
+    <select id="findCountByBookNO" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader_book
+        WHERE bookNO IN
+        <foreach collection="bookNOS" item="bookNO" open="(" separator="," close=")">
+            #{bookNO}
+        </foreach>
+    </select>
+    <select id="findByBookNOS" resultMap="baseResultMap">
+        SELECT *
+        FROM reader_book
+        WHERE bookNO IN
+        <foreach collection="bookNOS" item="bookNO" open="(" separator="," close=")">
+            #{bookNO}
+        </foreach>
+        ORDER BY return_date DESC;
+    </select>
+    <select id="findOverTimeBorrowedBooksByBookNO" resultMap="baseResultMap">
+        SELECT *
+        FROM reader_book
+        WHERE bookNO = #{bookNO};
     </select>
 </mapper>

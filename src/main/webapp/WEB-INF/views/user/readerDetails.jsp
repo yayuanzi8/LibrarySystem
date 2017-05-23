@@ -98,46 +98,43 @@
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
     <legend>修改邮箱</legend>
 </fieldset>
-<div class="layui-field-box">
-    <form id="updateEmailForm" class="layui-form" action="">
-        <div class="layui-form-item">
-            <label class="layui-form-label">旧邮箱</label>
-            <div class="layui-input-inline">
-                <input type="email" name="oldEmail" value="${reader.email}" disabled required
-                       lay-verify="required oldEmail"
-                       autocomplete="off" class="layui-input">
-            </div>
+<form id="updateEmailForm" class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">旧邮箱</label>
+        <div class="layui-input-inline">
+            <input type="email" name="oldEmail" value="${reader.email}" disabled required
+                   lay-verify="required oldEmail"
+                   autocomplete="off" class="layui-input">
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">新邮箱</label>
-            <div class="layui-input-inline">
-                <input type="email" name="newEmail" id="newEmail" lay-verify="required|newEmail" autocomplete="off"
-                       class="layui-input">
-            </div>
-            <div class="layui-form-mid layui-word-aux">新邮箱必须填写</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新邮箱</label>
+        <div class="layui-input-inline">
+            <input type="email" name="newEmail" id="newEmail" lay-verify="required|newEmail" autocomplete="off"
+                   class="layui-input">
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">验证码</label>
-            <div class="layui-input-inline">
-                <input type="text" name="captcha" lay-verify="required|captcha" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-word-aux">
-                <button type="button" id="getCaptcha" class="layui-btn layui-btn-danger">获取验证码</button>
-            </div>
+        <div class="layui-form-mid layui-word-aux">新邮箱必须填写</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="captcha" lay-verify="required|captcha" autocomplete="off" class="layui-input">
         </div>
-        <div class="layui-form-item">
-            <div style="text-align: left" class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="update" style="background-color: #5FB878">修改</button>
-                <button type="reset" class="layui-btn layui-btn-primary" style="">重置</button>
-            </div>
+        <div class="layui-word-aux">
+            <button type="button" id="getCaptcha" class="layui-btn layui-btn-danger">获取验证码</button>
         </div>
-    </form>
-</div>
+    </div>
+    <div class="layui-form-item">
+        <div style="text-align: left" class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="update" style="background-color: #5FB878">修改</button>
+            <button type="reset" class="layui-btn layui-btn-primary" style="">重置</button>
+        </div>
+    </div>
+</form>
 
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+<%--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
     <legend>修改密码</legend>
 </fieldset>
-<div class="layui-field-box">
     <form id="updatePasswordForm" class="layui-form" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">旧密码</label>
@@ -164,14 +161,13 @@
                 <button type="reset" class="layui-btn layui-btn-primary" style="">重置</button>
             </div>
         </div>
-    </form>
-</div>
+    </form>--%>
 
 
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/static/layui/layui.js"></script>
 <script src="${pageContext.request.contextPath}/static/reader_common.js"></script>
-<script>
+<script type="text/javascript">
     //Demo
     layui.use('form', function () {
         var form = layui.form(),

@@ -5,8 +5,6 @@
     <resultMap id="baseResultMap" type="librarySystem.domain.Book">
         <id column="bookNO" property="bookNO" jdbcType="VARCHAR"/>
         <result column="bookName" property="bookName" jdbcType="VARCHAR"/>
-        <result column="collectionNum" property="collectionNum" jdbcType="INTEGER"/>
-        <result column="borrowedNum" property="borrowedNum" jdbcType="INTEGER"/>
         <result column="author" property="author" jdbcType="VARCHAR"/>
         <result column="press" property="press" jdbcType="VARCHAR"/>
         <result column="translator" property="translator" jdbcType="VARCHAR"/>
@@ -27,5 +25,10 @@
         SELECT *
         FROM book
         WHERE bookNO = #{bookNO};
+    </select>
+    <select id="findByBookNameHazily" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookName LIKE CONCAT('%', #{bookName}, '%')
     </select>
 </mapper>
