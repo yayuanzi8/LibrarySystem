@@ -25,4 +25,10 @@ public interface ReaderBookService {
     Integer findOverTimeBorrowedBooksCountByReturnDate(Date returnDate, Integer itemCountEveryPage);
 
     List<ReaderBorrowHistory> getOverTimeBooksByReturnDate(Date returnDate, Integer pageNum, Integer itemCountEveryPage);
+
+    void returnBook(String credNum, String barCode) throws Exception;
+
+    Integer getSpecifyBookBorrowPageNum(String bookNO, Integer itemCountEveryPage);
+
+    List<ReaderBorrowHistory> findSpecifyBookBorrowHistory(String bookNO, Integer pageNum, Integer itemCountEveryPage);
 }

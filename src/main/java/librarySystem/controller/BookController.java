@@ -1,5 +1,7 @@
 package librarySystem.controller;
 
+import librarySystem.domain.Book;
+import librarySystem.service.BookService;
 import librarySystem.service.ReaderBookService;
 import librarySystem.util.Result;
 import librarySystem.webDomain.ReaderBorrowHistory;
@@ -19,10 +21,12 @@ import java.util.Map;
 public class BookController {
 
     private final ReaderBookService readerBookService;
+    private final BookService bookService;
 
     @Autowired
-    public BookController(ReaderBookService readerBookService) {
+    public BookController(ReaderBookService readerBookService, BookService bookService) {
         this.readerBookService = readerBookService;
+        this.bookService = bookService;
     }
 
     @RequestMapping(value = "/overTimeBooks", method = RequestMethod.GET)
@@ -36,13 +40,38 @@ public class BookController {
     @RequestMapping(value = "/overTimeBooksInPagination/{pageNum}", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> getOverTimeBooksInPagination(@PathVariable("pageNum") Integer pageNum) {
-        try{
-            List<ReaderBorrowHistory> historyList = readerBookService.getOverTimeBooks(pageNum,20);
+        try {
+            List<ReaderBorrowHistory> historyList = readerBookService.getOverTimeBooks(pageNum, 20);
             Map<String, Object> map = Result.ok();
             map.put("historyList", historyList);
             return map;
-        }catch (Throwable e){
+        } catch (Throwable e) {
             return Result.error();
         }
+    }
+
+    @RequestMapping(value = "/allBook", method = RequestMethod.GET)
+    public String getAllBookPageNum(Model model) {
+        Integer pageNum = bookService.getAllBookPageNum(20);
+        model.addAttribute("pageNum", pageNum);
+        return "book/allBook";
+    }
+
+    @RequestMapping(value = "/allBookInPagination/{pageNum}", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> getAllBookInPagination(@PathVariable("pageNum") Integer pageNum) {
+        try {
+            List<Book> bookList = bookService.findAllBookInPagination(pageNum, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("bookList", bookList);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/newBook", method = RequestMethod.GET)
+    public String addNewBook() {
+        return "book/newBook";
     }
 }

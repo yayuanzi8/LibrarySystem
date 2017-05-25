@@ -31,4 +31,14 @@
         FROM book
         WHERE bookName LIKE CONCAT('%', #{bookName}, '%')
     </select>
+    <select id="getAllBookCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM book
+    </select>
+    <select id="findAllBookInPagination" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY bookName
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
 </mapper>

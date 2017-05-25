@@ -60,6 +60,42 @@ public class ReaderBookController {
         } catch (Exception e) {
             return Result.error();
         }
+    }
 
+    @RequestMapping(value = "/returnBook", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> returnBook(@RequestParam("barCode") String barCode, @RequestParam("credNum") String credNum) {
+        try {
+            readerBookService.returnBook(credNum, barCode);
+            return Result.ok();
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/loadBookBorrowHistoryPageNum", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> loadBookBorrowHistoryPageNum(@RequestParam("bookNO") String bookNO) {
+        try {
+            Integer totalPage = readerBookService.getSpecifyBookBorrowPageNum(bookNO, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("totalPage", totalPage);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/loadBookBorrowHistory", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> loadBookBorrowHistory(@RequestParam("bookNO") String bookNO, @RequestParam("pageNum") Integer pageNum) {
+        try {
+            List<ReaderBorrowHistory> historyList = readerBookService.findSpecifyBookBorrowHistory(bookNO, pageNum, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("historyList", historyList);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
     }
 }

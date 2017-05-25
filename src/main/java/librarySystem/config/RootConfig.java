@@ -1,7 +1,5 @@
 package librarySystem.config;
 
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import librarySystem.util.CodeUtil;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -12,6 +10,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
@@ -21,7 +20,7 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = {"librarySystem"}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,
-        value = EnableWebMvc.class)})
+        value = EnableWebMvc.class), @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)})
 @PropertySource(value = "classpath:db.properties")
 public class RootConfig {
     @Bean(destroyMethod = "close")
@@ -51,6 +50,7 @@ public class RootConfig {
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
+
         bean.setTypeAliasesPackage("librarySystem.domain");
         String mapping = "librarySystem/mapper/*.xml";
         try {
@@ -70,7 +70,7 @@ public class RootConfig {
     }
 
     @Bean
-    public CodeUtil codeUtil(){
+    public CodeUtil codeUtil() {
         return new CodeUtil();
     }
 
@@ -81,7 +81,7 @@ public class RootConfig {
         sender.setUsername("yayuanzi8@163.com");
         sender.setPassword("gaoyisanban67hao");
         Properties properties = new Properties();
-        properties.setProperty("mail.smtp.auth","true");
+        properties.setProperty("mail.smtp.auth", "true");
         sender.setJavaMailProperties(properties);
         return sender;
     }

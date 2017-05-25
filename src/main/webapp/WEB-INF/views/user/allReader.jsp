@@ -2,20 +2,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>超期未还书籍</title>
+    <title>全部读者</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/layui/css/layui.css" media="all">
 </head>
 <body>
 <div style="background: url('${pageContext.request.contextPath}/static/images/library.jpg');height: 30%"></div>
 <ul class="layui-nav">
-    <li class="layui-nav-item layui-this">
+    <li class="layui-nav-item">
         <a href="javascript:;">借阅管理</a>
         <dl class="layui-nav-child">
             <dd><a href="${pageContext.request.contextPath}/book/overTimeBooks">超期未还图书</a></dd>
             <dd><a href="">续借中的图书</a></dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="${pageContext.request.contextPath}/reader/allReader">用户管理</a></li>
+    <li class="layui-nav-item layui-this"><a href="${pageContext.request.contextPath}/reader/allReader">用户管理</a></li>
     <li class="layui-nav-item">
         <a href="javascript:;">图书管理</a>
         <dl class="layui-nav-child">
@@ -34,9 +34,9 @@
         <div class="layui-form-item">
             <div class="layui-input-inline">
                 <select name="searchType" lay-verify="required" lay-filter="selectSearchType" lay-search="">
-                    <option value="bookName">书名</option>
-                    <option value="bookNO">中图法分类号</option>
-                    <option value="returnDate">应还日期</option>
+                    <option value="credNum">证件号</option>
+                    <option value="name">姓名</option>
+                    <option value="entryDate">入学年份</option>
                 </select>
             </div>
             <div class="layui-input-inline">
@@ -60,17 +60,17 @@
         <thead>
         <tr>
             <th>证件号</th>
-            <th>条形码</th>
-            <th>书名</th>
-            <th>中图法分类号</th>
-            <th>借阅日期</th>
-            <th>应还日期</th>
-            <th>馆藏地</th>
-            <th>状态</th>
-            <th>催还</th>
+            <th>姓名</th>
+            <th>入学时间</th>
+            <th>毕业时间</th>
+            <th>最大借阅数</th>
+            <th>读者类型</th>
+            <th>邮箱</th>
+            <th>当前借阅数</th>
+            <th>查看借阅详情</th>
         </tr>
         </thead>
-        <tbody id="historyItems">
+        <tbody id="readerItems">
 
         </tbody>
     </table>
@@ -106,39 +106,48 @@
         return fmt;
     };
     var layer;
+
+    function watchBorrowDetails(credNum) {
+        window.open("${pageContext.request.contextPath}/reader/watchBorrowDetails/" + credNum);
+    }
+
     //分页获取数据
-    function loadHistory(pageNum) {
+    function loadReader(pageNum) {
         $.ajax({
-            url: "${pageContext.request.contextPath}/book/overTimeBooksInPagination/" + pageNum,
+            url: "${pageContext.request.contextPath}/reader/getReaderInPagination/" + pageNum,
             method: "post",
             success: function (response) {
-                $("#historyItems").empty();
+                $("#readerItems").empty();
                 var message = response.message;
                 if (message === "ok") {
-                    var historyList = response.historyList;
-                    for (var i = 0; i < historyList.length; i++) {
-                        var history = historyList[i];
+                    var readerList = response.readerList;
+                    for (var i = 0; i < readerList.length; i++) {
+                        var reader = readerList[i];
                         var tr = $("<tr></tr>");
-                        var td = $("<td>" + history.credNum + "</td>")
-                        var td0 = $("<td>" + (history.barCode) + "</td>");
-                        var td1 = $("<td>" + (history.cnum + history.bookNO) + "</td>");
-                        var td2 = $("<td>" + history.bookName + "</td>");
-                        var td4 = $("<td>" + new Date(history.borrowDate).Format("yyyy-MM-dd") + "</td>");
-                        var td5 = $("<td>" + new Date(history.returnDate).Format("yyyy-MM-dd") + "</td>");
-                        var td6 = $("<td>" + history.storeAddress + "</td>");
-                        var td7 = $("<td>" + history.status + "</td>");
-                        var td8 = $("<td><button onclick='reminder(" + history.credNum + ",\"" + history.bookName + "\")'class='layui-btn layui-btn-danger'>催还</button></td>");
+                        var td = $("<td>" + reader.credNum + "</td>");
+                        var td0 = $("<td>" + reader.name + "</td>");
+                        var td1 = $("<td>" + new Date(reader.startTime).Format("yyyy-MM-dd") + "</td>");
+                        var td2 = $("<td>" + new Date(reader.endTime).Format("yyyy-MM-dd") + "</td>");
+                        var td4 = $("<td>" + reader.maxAvailable + "</td>");
+                        var td5 = $("<td>" + reader.readerType + "</td>");
+                        var td6 = $("<td><a href='mailto:" + reader.email + "'>" + reader.email + "</a></td>");
+                        var td7 = $("<td>" + reader.currentBorrowNum + "</td>");
+                        var td8 = $("<td><button data-method='notice' data-type='auto' onclick='watchBorrowDetails(" + reader.credNum + ")' class='layui-btn layui-btn-warm'>查看借阅情况</button></td>");
                         td.appendTo(tr);
                         td0.appendTo(tr);
-                        td2.appendTo(tr);
                         td1.appendTo(tr);
+                        td2.appendTo(tr);
                         td4.appendTo(tr);
                         td5.appendTo(tr);
                         td6.appendTo(tr);
                         td7.appendTo(tr);
                         td8.appendTo(tr);
-                        tr.appendTo($("#historyItems"));
+                        tr.appendTo($("#readerItems"));
                     }
+                    $2('#readerItems').find('.layui-btn').on('click', function () {
+                        var othis = $2(this), method = othis.data('method');
+                        active[method] ? active[method].call(this, othis, othis.attr('crednum')) : '';
+                    });
                 } else if (message === "error") {
                     alert("错误！");
                 }
@@ -147,77 +156,14 @@
                 alert("服务器出错！");
             }
         });
-    }
-
-    function loadHistoryBySearch(pageNum, searchType, searchValue) {
-        $.ajax({
-            url: "${pageContext.request.contextPath}/readerBook/searchOverTimeBooks",
-            method: "post",
-            data: "pageNum=" + pageNum + "&searchType=" + searchType + "&searchValue=" + searchValue,
-            success: function (response) {
-                $("#historyItems").empty();
-                layer.msg("数据加载完成",{icon:1});
-                var message = response.message;
-                if (message === "ok") {
-                    var historyList = response.historyList;
-                    for (var i = 0; i < historyList.length; i++) {
-                        var history = historyList[i];
-                        var tr = $("<tr></tr>");
-                        var td = $("<td>" + history.credNum + "</td>")
-                        var td0 = $("<td>" + (history.barCode) + "</td>");
-                        var td1 = $("<td>" + (history.cnum + history.bookNO) + "</td>");
-                        var td2 = $("<td>" + history.bookName + "</td>");
-                        var td4 = $("<td>" + new Date(history.borrowDate).Format("yyyy-MM-dd") + "</td>");
-                        var td5 = $("<td>" + new Date(history.returnDate).Format("yyyy-MM-dd") + "</td>");
-                        var td6 = $("<td>" + history.storeAddress + "</td>");
-                        var td7 = $("<td>" + history.status + "</td>");
-                        var td8 = $("<td><button onclick='reminder(" + history.credNum + ",\"" + history.bookName + "\")'class='layui-btn layui-btn-danger'>催还</button></td>");
-                        td.appendTo(tr);
-                        td0.appendTo(tr);
-                        td2.appendTo(tr);
-                        td1.appendTo(tr);
-                        td4.appendTo(tr);
-                        td5.appendTo(tr);
-                        td6.appendTo(tr);
-                        td7.appendTo(tr);
-                        td8.appendTo(tr);
-                        tr.appendTo($("#historyItems"));
-                    }
-                } else if (message === "error") {
-                    alert("错误！");
-                }
-            },
-            error: function () {
-                alert("服务器出错！");
-            }
-        });
-    }
-
-    function reminder(credNum, bookName) {
-        if (confirm("你确定要催还吗？确定之后后台会自动发送邮件给超期未还读者")) {
-            $.ajax({
-                url: "${pageContext.request.contextPath}/reader/reminder/" + credNum + "/" + bookName,
-                method: "post",
-                success: function (response) {
-                    var message = response.message;
-                    if (message === "ok") {
-                        layer.msg("催还成功！");
-                    } else if (message === "error") {
-                        layer.msg("催还失败！邮件发送失败！", {icon: 5});
-                    }
-                },
-                error: function () {
-                    layer.msg("催还失败！邮件发送失败！", {icon: 5})
-                }
-            });
-        }
     }
 
     layui.use(['laypage', 'layer', 'form', 'laydate'], function () {
         var laypage = layui.laypage;
-        var layer = layui.layer,
-            form = layui.form(),
+        var form = layui.form(),
             laydate = layui.laydate;
+        $2 = layui.jquery;
+        layer = layui.layer;
         laypage({
             cont: 'demo2',
             pages: ${pageNum},
@@ -225,16 +171,18 @@
             last: ${pageNum},
             skin: '#1E9FFF',
             jump: function (obj) {
-                loadHistory(obj.curr);
+                loadReader(obj.curr);
             }
         });
 
+        //弹出日期框
         function popupDate() {
             layui.laydate({elem: this})
         }
 
+        //改变搜索类型的时候调用
         form.on("select(selectSearchType)", function (data) {
-            if (data.value === "returnDate") {
+            if (data.value === "entryDate") {
                 $("#searchValue").prop("lay-verify", "date");
                 $("#searchValue").bind("click", popupDate);
             } else {
@@ -243,10 +191,58 @@
             }
         });
 
+        function loadReaderBySearch(pageNum, searchType, searchValue) {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/reader/searchReader",
+                method: "post",
+                data: "pageNum=" + pageNum + "&searchType=" + searchType + "&searchValue=" + searchValue,
+                success: function (response) {
+                    $("#readerItems").empty();
+                    layer.msg("数据加载完成", {icon: 1});
+                    var message = response.message;
+                    if (message === "ok") {
+                        var readerList = response.readerList;
+                        for (var i = 0; i < readerList.length; i++) {
+                            var reader = readerList[i];
+                            var tr = $("<tr></tr>");
+                            var td = $("<td>" + reader.credNum + "</td>");
+                            var td0 = $("<td>" + reader.name + "</td>");
+                            var td1 = $("<td>" + new Date(reader.startTime).Format("yyyy-MM-dd") + "</td>");
+                            var td2 = $("<td>" + new Date(reader.endTime).Format("yyyy-MM-dd") + "</td>");
+                            var td4 = $("<td>" + reader.maxAvailable + "</td>");
+                            var td5 = $("<td>" + reader.readerType + "</td>");
+                            var td6 = $("<td><a href='mailto:" + reader.email + "'>" + reader.email + "</a></td>");
+                            var td7 = $("<td>" + reader.currentBorrowNum + "</td>");
+                            var td8 = $("<td><button data-method='notice' data-type='auto' class='layui-btn layui-btn-warm'>查看借阅情况</button></td>");
+                            td.appendTo(tr);
+                            td0.appendTo(tr);
+                            td1.appendTo(tr);
+                            td2.appendTo(tr);
+                            td4.appendTo(tr);
+                            td5.appendTo(tr);
+                            td6.appendTo(tr);
+                            td7.appendTo(tr);
+                            td8.appendTo(tr);
+                            tr.appendTo($("#readerItems"));
+                        }
+                        $2('#readerItems').find('.layui-btn').on('click', function () {
+                            var othis = $2(this), method = othis.data('method');
+                            active[method] ? active[method].call(this, othis) : '';
+                        });
+                    } else if (message === "error") {
+                        alert("错误！");
+                    }
+                },
+                error: function () {
+                    alert("服务器出错！");
+                }
+            });
+        }
+
         form.on("submit(search)", function (data) {
             var field = data.field;
             $.ajax({
-                url: "${pageContext.request.contextPath}/readerBook/searchOverTimeBooks",
+                url: "${pageContext.request.contextPath}/reader/searchReader",
                 data: "searchType=" + field.searchType + "&searchValue=" + field.searchValue + "&pageNum=1",
                 method: "post",
                 processData: false,
@@ -262,11 +258,11 @@
                                 last: response.totalPage,
                                 skin: '#1E9FFF',
                                 jump: function (obj) {
-                                    loadHistoryBySearch(obj.curr, field.searchType, field.searchValue);
+                                    loadReaderBySearch(obj.curr, field.searchType, field.searchValue);
                                 }
                             });
                         } else {
-                            layer.msg("没有数据！",{icon:5});
+                            layer.msg("没有数据！", {icon: 5});
                         }
                     } else if (message === "error") {
 

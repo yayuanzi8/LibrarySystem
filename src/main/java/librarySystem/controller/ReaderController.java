@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +27,14 @@ public class ReaderController {
     private final ReaderService readerService;
     private final ReaderBookService readerBookService;
     private final MailSender mailSender;
+    private final SimpleDateFormat formatter;
 
     @Autowired
     public ReaderController(ReaderService readerService, ReaderBookService readerBookService, MailSender mailSender) {
         this.readerService = readerService;
         this.readerBookService = readerBookService;
         this.mailSender = mailSender;
+        this.formatter = new SimpleDateFormat("yyyy-MM-dd");
     }
 
 
@@ -118,8 +122,87 @@ public class ReaderController {
             message.setText("您好！[" + reader.getName() + "]，您在ZHKU大学借阅的[" + bookName + "]已超期！请尽快到图书馆归还！");
             mailSender.send(message);
             return Result.ok();
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error();
         }
     }
+
+    @RequestMapping(value = "/allReader", method = RequestMethod.GET)
+    public String allReader(Model model) {
+        //得到用户的数量的页数
+        Integer pageNum = readerService.getReaderPageNum(20);//每页20条数据
+        model.addAttribute("pageNum", pageNum);
+        return "user/allReader";
+    }
+
+    @RequestMapping(value = "/getReaderInPagination/{pageNum}", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> getReaderInPagination(@PathVariable("pageNum") Integer pageNum) {
+        try {
+            List<Reader> readerList = readerService.findAllReaderInPagination(pageNum, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("readerList", readerList);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/searchReader", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> searchReader(@RequestParam("searchType") String searchType,
+                                     @RequestParam("searchValue") String searchValue, @RequestParam("pageNum") Integer pageNum) {
+        Integer itemCountEveryPage = 20;
+        try {
+            List<Reader> readerList = null;
+            Integer totalPage = 0;
+            switch (searchType) {
+                case "credNum":
+                    totalPage = readerService.getReaderPageNumByCredNum(searchValue, itemCountEveryPage);
+                    if (totalPage != 0)
+                        readerList = readerService.findReadersByCredNumInPagination(searchValue, pageNum, itemCountEveryPage);
+                    break;
+                case "name":
+                    totalPage = readerService.getReaderPageNumByName(searchValue, itemCountEveryPage);
+                    if (totalPage != 0)
+                        readerList = readerService.findReadersByNameInPagination(searchValue, pageNum, itemCountEveryPage);
+                    break;
+                case "entryDate":
+                    Date entryDate = formatter.parse(searchValue);
+                    totalPage = readerService.getReaderPageNumByEntryDate(entryDate, itemCountEveryPage);
+                    if (totalPage != 0)
+                        readerList = readerService.findReadersByEntryDateInPagination(entryDate, pageNum, itemCountEveryPage);
+                    break;
+            }
+            Map<String, Object> map = Result.ok();
+            map.put("totalPage", totalPage);
+            map.put("readerList", readerList);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @RequestMapping(value = "/watchBorrowDetails/{credNum}", method = RequestMethod.GET)
+    public String toDetailsPage(@PathVariable("credNum") String credNum, Model model) {
+        Integer pageNum = readerBookService.findPageNumByCredNum(credNum, 20);
+        model.addAttribute("page_num", pageNum);
+        model.addAttribute("credNum", credNum);
+        return "user/watchBorrowDetails";
+    }
+
+    @RequestMapping(value = "/adminGetReaderHistory/{page_num}/{cred_num}", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> adminGetReaderHistory(@PathVariable("page_num") Integer pageNum, @PathVariable("cred_num") String credNum) {
+        try {
+            Reader reader = readerService.findByCredNum(credNum);
+            List<ReaderBorrowHistory> historyList = readerService.getReaderBorrowHistory(reader.getCredNum(), pageNum, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("historyList", historyList);
+            return map;
+        } catch (Throwable e) {
+            return Result.error();
+        }
+    }
+
 }

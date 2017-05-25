@@ -1,8 +1,12 @@
 package librarySystem.service.impl;
 
+import librarySystem.dao.BookCLCDao;
 import librarySystem.dao.BookDao;
 import librarySystem.dao.ReaderBookDao;
+import librarySystem.dao.ReaderDao;
 import librarySystem.domain.Book;
+import librarySystem.domain.BookCLC;
+import librarySystem.domain.Reader;
 import librarySystem.domain.ReaderBook;
 import librarySystem.service.ReaderBookService;
 import librarySystem.util.ReaderUtil;
@@ -15,18 +19,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 @Service
-@Transactional
+@Transactional(rollbackFor = {java.lang.Exception.class, java.lang.RuntimeException.class}, transactionManager = "transactionManager")
 public class ReaderBookServiceImpl implements ReaderBookService {
 
     private final ReaderBookDao readerBookDao;
     private final BookDao bookDao;
+    private final BookCLCDao bookCLCDao;
+    private final ReaderDao readerDao;
 
     @Autowired
-    public ReaderBookServiceImpl(ReaderBookDao readerBookDao, BookDao bookDao) {
+    public ReaderBookServiceImpl(ReaderBookDao readerBookDao, BookDao bookDao, BookCLCDao bookCLCDao, ReaderDao readerDao) {
         this.readerBookDao = readerBookDao;
         this.bookDao = bookDao;
+        this.bookCLCDao = bookCLCDao;
+        this.readerDao = readerDao;
     }
 
     //查找特定用户的借阅记录数目
@@ -178,6 +185,44 @@ public class ReaderBookServiceImpl implements ReaderBookService {
         for (ReaderBook readerBook : readerBookList) {
             Book book = bookDao.findByBookNO(readerBook.getBookNO());
             ReaderBorrowHistory history = ReaderUtil.extractBorrowHistory(readerBook, book);
+            historyList.add(history);
+        }
+        return historyList;
+    }
+
+    @Override
+    public void returnBook(String credNum, String barCode) throws Exception {
+        ReaderBook readerBook = readerBookDao.findByCredNumAndBarCodeAndStatus(credNum, barCode, "超期");
+        BookCLC bookCLC = bookCLCDao.findByBarCode(barCode);
+        Reader reader = readerDao.findByCredNum(credNum);
+        reader.setCurrentBorrowNum(reader.getCurrentBorrowNum() - 1);
+        readerBook.setStatus("可借阅");
+        bookCLC.setStatus("可借阅");
+        readerBookDao.update(readerBook);
+        bookCLCDao.update(bookCLC);
+        readerDao.update(reader);
+    }
+
+    @Override
+    public Integer getSpecifyBookBorrowPageNum(String bookNO, Integer itemCountEveryPage) {
+        Integer itemCount = readerBookDao.getSpecifyBookBorrowCount(bookNO);
+        Integer pageNum;
+        if (itemCount % itemCountEveryPage == 0) {
+            pageNum = itemCount / itemCountEveryPage;
+        } else {
+            pageNum = (itemCount / itemCountEveryPage) + 1;
+        }
+        return pageNum;
+    }
+
+    @Override
+    public List<ReaderBorrowHistory> findSpecifyBookBorrowHistory(String bookNO, Integer pageNum, Integer itemCountEveryPage) {
+        Integer start = (pageNum - 1) * itemCountEveryPage;
+        List<ReaderBook> readerBookList = readerBookDao.findSpecifyBookBorrowHistory(bookNO,start,itemCountEveryPage);
+        List<ReaderBorrowHistory> historyList = new ArrayList<>();
+        for (ReaderBook readerBook : readerBookList) {
+            Book book = bookDao.findByBookNO(readerBook.getBookNO());
+            ReaderBorrowHistory history = ReaderUtil.extractBorrowHistory(readerBook,book);
             historyList.add(history);
         }
         return historyList;

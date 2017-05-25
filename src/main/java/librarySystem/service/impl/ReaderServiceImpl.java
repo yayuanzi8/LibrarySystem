@@ -14,10 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = {java.lang.Exception.class, java.lang.RuntimeException.class}, transactionManager = "transactionManager")
 public class ReaderServiceImpl implements ReaderService {
 
     private final ReaderDao readerDao;
@@ -69,6 +70,94 @@ public class ReaderServiceImpl implements ReaderService {
             histories.add(history);
         }
         return histories;
+    }
+
+    @Override
+    public Integer getReaderPageNum(Integer itemCountEveryPage) {
+        Integer itemCount = readerDao.getReaderNum();
+        Integer pageNum;
+        if (itemCount % itemCountEveryPage == 0) {
+            pageNum = itemCount / itemCountEveryPage;
+        } else {
+            pageNum = (itemCount / itemCountEveryPage) + 1;
+        }
+        return pageNum;
+    }
+
+    @Override
+    public List<Reader> findAllReaderInPagination(Integer pageNum, Integer itemCountEveryPage) {
+        Integer start = (pageNum - 1) * itemCountEveryPage;
+        List<Reader> readerList = readerDao.findAll(start, itemCountEveryPage);
+        for (Reader reader : readerList) {
+            reader.setPassword(null);
+        }
+        return readerList;
+    }
+
+    @Override
+    public Integer getReaderPageNumByCredNum(String credNum, Integer itemCountEveryPage) {
+        Integer itemCount = readerDao.getReaderNumByCredNum(credNum);
+        Integer pageNum;
+        if (itemCount % itemCountEveryPage == 0) {
+            pageNum = itemCount / itemCountEveryPage;
+        } else {
+            pageNum = (itemCount / itemCountEveryPage) + 1;
+        }
+        return pageNum;
+    }
+
+    @Override
+    public List<Reader> findReadersByCredNumInPagination(String credNum, Integer pageNum, Integer itemCountEveryPage) {
+        Integer start = (pageNum - 1) * itemCountEveryPage;
+        List<Reader> readerList = readerDao.findByCredNumHazily(credNum, start, itemCountEveryPage);
+        for (Reader reader : readerList) {
+            reader.setPassword(null);
+        }
+        return readerList;
+    }
+
+    @Override
+    public Integer getReaderPageNumByName(String name, Integer itemCountEveryPage) {
+        Integer itemCount = readerDao.getReaderNumByName(name);
+        Integer pageNum;
+        if (itemCount % itemCountEveryPage == 0) {
+            pageNum = itemCount / itemCountEveryPage;
+        } else {
+            pageNum = (itemCount / itemCountEveryPage) + 1;
+        }
+        return pageNum;
+    }
+
+    @Override
+    public List<Reader> findReadersByNameInPagination(String name, Integer pageNum, Integer itemCountEveryPage) {
+        Integer start = (pageNum - 1) * itemCountEveryPage;
+        List<Reader> readerList = readerDao.findByNameHazily(name, start, itemCountEveryPage);
+        for (Reader reader : readerList) {
+            reader.setPassword(null);
+        }
+        return readerList;
+    }
+
+    @Override
+    public Integer getReaderPageNumByEntryDate(Date entryDate, Integer itemCountEveryPage) {
+        Integer itemCount = readerDao.getReaderNumByEntryDate(entryDate);
+        Integer pageNum;
+        if (itemCount % itemCountEveryPage == 0) {
+            pageNum = itemCount / itemCountEveryPage;
+        } else {
+            pageNum = (itemCount / itemCountEveryPage) + 1;
+        }
+        return pageNum;
+    }
+
+    @Override
+    public List<Reader> findReadersByEntryDateInPagination(Date entryDate, Integer pageNum, Integer itemCountEveryPage) {
+        Integer start = (pageNum - 1) * itemCountEveryPage;
+        List<Reader> readerList = readerDao.findByStartTime(entryDate, start, itemCountEveryPage);
+        for (Reader reader : readerList) {
+            reader.setPassword(null);
+        }
+        return readerList;
     }
 
 }

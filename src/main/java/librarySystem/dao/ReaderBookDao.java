@@ -32,4 +32,10 @@ public interface ReaderBookDao {
     List<ReaderBook> findByBookNOS(@Param("bookNOS") List<String> bookNOS);
 
     List<ReaderBook> findOverTimeBorrowedBooksByBookNO(@Param("bookNO") String bookNO);
+
+    ReaderBook findByCredNumAndBarCodeAndStatus(@Param("credNum") String credNum, @Param("barCode") String barCode, @Param("status") String status);
+
+    Integer getSpecifyBookBorrowCount(@Param("bookNO") String bookNO);
+
+    List<ReaderBook> findSpecifyBookBorrowHistory(@Param("bookNO") String bookNO, @Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
 }

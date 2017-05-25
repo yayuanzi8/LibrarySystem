@@ -11,4 +11,8 @@ public interface BookDao {
     Book findByBookNO(@Param("bookNO") String bookNO);
 
     List<Book> findByBookNameHazily(@Param("bookName") String bookName);
+
+    Integer getAllBookCount();
+
+    List<Book> findAllBookInPagination(@Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
 }

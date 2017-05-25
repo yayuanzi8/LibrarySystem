@@ -17,14 +17,14 @@ public class Reader implements UserDetails {
     private String readerType;
     private Integer cumAvailNum;
     private String email;
-    private String currentBorrowNum;
+    private Integer currentBorrowNum;
     private Set<? extends  GrantedAuthority> authorities;
 
-    public String getCurrentBorrowNum() {
+    public Integer getCurrentBorrowNum() {
         return currentBorrowNum;
     }
 
-    public void setCurrentBorrowNum(String currentBorrowNum) {
+    public void setCurrentBorrowNum(Integer currentBorrowNum) {
         this.currentBorrowNum = currentBorrowNum;
     }
 

@@ -6,4 +6,14 @@
         <result property="bookNO" column="bookNO" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
+    <update id="update">
+        UPDATE book_clc
+        SET bookNO = #{bookCLC.bookNO},status = #{bookCLC.status}
+        WHERE barCode = #{bookCLC.barCode}
+    </update>
+    <select id="findByBarCode" resultMap="baseResultMap">
+        SELECT *
+        FROM book_clc
+        WHERE barCode = #{barCode}
+    </select>
 </mapper>

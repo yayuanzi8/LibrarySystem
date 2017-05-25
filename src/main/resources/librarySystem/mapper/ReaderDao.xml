@@ -11,14 +11,15 @@
         <result column="reader_type" property="readerType" jdbcType="VARCHAR"/>
         <result column="cum_avail_num" property="cumAvailNum" jdbcType="INTEGER"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
-        <result column="current_borrow_num" property="currentBorrowNum" jdbcType="INTEGER"/>
+        <result column="current_borrow_num" property="currentBorrowNum" javaType="Integer" jdbcType="INTEGER"/>
     </resultMap>
     <update id="update" parameterType="librarySystem.domain.Reader">
         UPDATE reader
-        SET name = #{reader.name},password = #{reader.password},
-            start_time = #{reader.startTime},end_time=#{reader.endTime},
-            max_available=#{reader.maxAvailable},reader_type=#{reader.readerType},
-            cum_avail_num=#{reader.cumAvailNum},email=#{reader.email} where cred_num=#{reader.credNum}
+        SET name          = #{reader.name}, password = #{reader.password},
+            start_time    = #{reader.startTime}, end_time = #{reader.endTime},
+            max_available = #{reader.maxAvailable}, reader_type = #{reader.readerType},
+            cum_avail_num = #{reader.cumAvailNum}, email = #{reader.email},current_borrow_num=#{reader.currentBorrowNum}
+        WHERE cred_num = #{reader.credNum}
     </update>
     <select id="findByCredNum" resultMap="baseResultMap">
         SELECT *
@@ -29,5 +30,51 @@
         SELECT *
         FROM reader
         WHERE email = #{email}
+    </select>
+    <select id="getReaderNum" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader
+    </select>
+    <select id="findAll" resultMap="baseResultMap">
+        SELECT *
+        FROM reader
+        ORDER BY start_time ASC
+        LIMIT #{start}, #{itemCountEveryPage};
+    </select>
+    <select id="getReaderNumByCredNum" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader
+        WHERE cred_num LIKE CONCAT('%', #{credNum}, '%')
+    </select>
+    <select id="findByCredNumHazily" resultMap="baseResultMap">
+        SELECT *
+        FROM reader
+        WHERE cred_num LIKE CONCAT('%', #{credNum}, '%')
+        ORDER BY start_time ASC
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="getReaderNumByName" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader
+        WHERE name LIKE CONCAT('%', #{name}, '%')
+    </select>
+    <select id="findByNameHazily" resultMap="baseResultMap">
+        SELECT *
+        FROM reader
+        WHERE name LIKE CONCAT('%', #{name}, '%')
+        ORDER BY start_time ASC
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="getReaderNumByEntryDate" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader
+        WHERE start_time > #{entryDate}
+    </select>
+    <select id="findByStartTime" resultMap="baseResultMap">
+        SELECT *
+        FROM reader
+        WHERE start_time > #{entryDate}
+        ORDER BY start_time ASC
+        LIMIT #{start}, #{itemCountEveryPage}
     </select>
 </mapper>
