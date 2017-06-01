@@ -1,18 +1,146 @@
 package librarySystem.domain;
 
+import java.util.Date;
+
 public class Book {
+    private Integer bookId;
     private String bookNO;
+    private String ISBN;//
     private String bookName;
+    private String subHead;//
     private String author;
+    private String authorDesc;//
     private String press;
+    private String pressYear;//
     private String translator;
     private String bookDesc;
     private Integer pageNum;
     private String bookImage;
     private String bookType;
-    private String storeAddress;
     private String cnum;
     private Double price;
+    private int searchNum;//0
+    private int borrowNum;//浏览数
+    private String score;//0
+    private int scoreNum;//default 0
+    private int storeNumber;//
+    private int borrowNumber;//
+    private Date addTime;
+    private String shortCatalog;
+    private String longCatalog;
+    private String storeAddress;
+
+    public Integer getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
+    }
+
+    public String getSubHead() {
+        return subHead;
+    }
+
+    public void setSubHead(String subHead) {
+        this.subHead = subHead;
+    }
+
+    public String getAuthorDesc() {
+        return authorDesc;
+    }
+
+    public void setAuthorDesc(String authorDesc) {
+        this.authorDesc = authorDesc;
+    }
+
+    public String getPressYear() {
+        return pressYear;
+    }
+
+    public void setPressYear(String pressYear) {
+        this.pressYear = pressYear;
+    }
+
+    public int getSearchNum() {
+        return searchNum;
+    }
+
+    public void setSearchNum(int searchNum) {
+        this.searchNum = searchNum;
+    }
+
+    public int getBorrowNum() {
+        return borrowNum;
+    }
+
+    public void setBorrowNum(int borrowNum) {
+        this.borrowNum = borrowNum;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
+    public int getScoreNum() {
+        return scoreNum;
+    }
+
+    public void setScoreNum(int scoreNum) {
+        this.scoreNum = scoreNum;
+    }
+
+    public int getStoreNumber() {
+        return storeNumber;
+    }
+
+    public void setStoreNumber(int storeNumber) {
+        this.storeNumber = storeNumber;
+    }
+
+    public int getBorrowNumber() {
+        return borrowNumber;
+    }
+
+    public void setBorrowNumber(int borrowNumber) {
+        this.borrowNumber = borrowNumber;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
+    }
+
+    public String getShortCatalog() {
+        return shortCatalog;
+    }
+
+    public void setShortCatalog(String shortCatalog) {
+        this.shortCatalog = shortCatalog;
+    }
+
+    public String getLongCatalog() {
+        return longCatalog;
+    }
+
+    public void setLongCatalog(String longCatalog) {
+        this.longCatalog = longCatalog;
+    }
 
     public String getCnum() {
         return cnum;

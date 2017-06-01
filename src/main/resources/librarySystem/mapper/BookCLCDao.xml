@@ -5,15 +5,52 @@
         <id property="barCode" column="barCode" jdbcType="VARCHAR"/>
         <result property="bookNO" column="bookNO" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="entryTime" column="entryTime" jdbcType="DATE"/>
+        <result property="storeAddress" column="store_addr" jdbcType="VARCHAR"/>
     </resultMap>
+    <insert id="save">
+        INSERT INTO book_clc (barCode, bookNO, status, entryTime, store_addr)
+        VALUES (#{bookCLC.barCode}, #{bookCLC.bookNO}, #{bookCLC.status}, #{bookCLC.entryTime}, #{bookCLC.storeAddress})
+    </insert>
     <update id="update">
         UPDATE book_clc
-        SET bookNO = #{bookCLC.bookNO},status = #{bookCLC.status}
+        SET bookNO = #{bookCLC.bookNO}, status = #{bookCLC.status}
         WHERE barCode = #{bookCLC.barCode}
     </update>
+    <delete id="deleteByBookNO">
+        DELETE FROM book_clc
+        WHERE bookNO = #{bookNO}
+    </delete>
+    <delete id="deleteByBarCode">
+        DELETE FROM book_clc
+        WHERE barCode = #{barCode}
+    </delete>
     <select id="findByBarCode" resultMap="baseResultMap">
         SELECT *
         FROM book_clc
         WHERE barCode = #{barCode}
     </select>
+    <select id="getLatestBarCode" resultType="java.lang.String">
+        SELECT book_clc.barCode
+        FROM book_clc
+        WHERE entryTime = (SELECT max(entryTime)
+                           FROM book_clc)
+    </select>
+    <select id="findByBookNO" resultMap="baseResultMap">
+        SELECT *
+        FROM book_clc
+        WHERE bookNO = #{bookNO};
+    </select>
+
+    <select id="findByStatus" resultMap="baseResultMap">
+        SELECT *
+        FROM book_clc
+        WHERE STATUS = '可借' AND bookNO = #{bookNO};
+    </select>
+
+    <update id="updateStatus">
+        UPDATE book_clc
+        SET status = '借出'
+        WHERE barCode = #{barCode}
+    </update>
 </mapper>

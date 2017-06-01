@@ -3,7 +3,7 @@ package librarySystem.webDomain;
 import java.util.Date;
 
 public class ReaderBorrowHistory {
-    private String credNum;
+    private Integer credNum;
     private String barCode;
     private String bookNO;
     private Date returnDate;
@@ -22,11 +22,11 @@ public class ReaderBorrowHistory {
         this.barCode = barCode;
     }
 
-    public String getCredNum() {
+    public Integer getCredNum() {
         return credNum;
     }
 
-    public void setCredNum(String credNum) {
+    public void setCredNum(Integer credNum) {
         this.credNum = credNum;
     }
 

@@ -25,7 +25,7 @@
         <thead>
         <tr>
             <th>条形码</th>
-            <th>中图法编号</th>
+            <th>索书号</th>
             <th>书名</th>
             <th>作者</th>
             <th>借阅时间</th>

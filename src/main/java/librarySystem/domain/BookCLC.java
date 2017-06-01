@@ -1,9 +1,29 @@
 package librarySystem.domain;
 
+import java.util.Date;
+
 public class BookCLC {
     private String barCode;
     private String bookNO;
     private String status;
+    private String storeAddress;
+    private Date entryTime;
+
+    public Date getEntryTime() {
+        return entryTime;
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
+    }
+
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
+    }
+
+    public void setEntryTime(Date entryTime) {
+        this.entryTime = entryTime;
+    }
 
     public String getBarCode() {
         return barCode;

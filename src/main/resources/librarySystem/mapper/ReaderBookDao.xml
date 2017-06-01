@@ -2,8 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="librarySystem.dao.ReaderBookDao">
     <resultMap id="baseResultMap" type="librarySystem.domain.ReaderBook">
+        <id property="rbId" column="rb_id" jdbcType="INTEGER"/>
         <id property="barCode" column="barCode" jdbcType="VARCHAR"/>
-        <id property="credNum" column="cred_num" jdbcType="CHAR"/>
+        <id property="credNum" column="cred_num" jdbcType="BIGINT"/>
         <result property="bookNO" column="bookNO" jdbcType="VARCHAR"/>
         <result property="returnDate" column="return_date" jdbcType="DATE"/>
         <result property="borrowDate" column="borrow_date" jdbcType="DATE"/>
@@ -13,8 +14,16 @@
         UPDATE reader_book
         SET return_date = #{readerBook.returnDate}, borrow_date = #{readerBook.borrowDate},
             status      = #{readerBook.status}
-        WHERE cred_num = #{readerBook.credNum} AND barCode = #{readerBook.barCode}
+        WHERE cred_num = #{readerBook.credNum} AND barCode = #{readerBook.barCode} AND rb_id = #{readerBook.rbId}
     </update>
+    <delete id="deleteByBookNO">
+        DELETE FROM reader_book
+        WHERE bookNO = #{bookNO}
+    </delete>
+    <delete id="deleteByBarCode">
+        DELETE FROM reader_book
+        WHERE barCode = #{barCode}
+    </delete>
     <select id="findByCredNum" resultMap="baseResultMap">
         SELECT *
         FROM reader_book
@@ -59,6 +68,7 @@
         <foreach collection="bookNOS" item="bookNO" open="(" separator="," close=")">
             #{bookNO}
         </foreach>
+        AND status = '超期'
     </select>
     <select id="findByBookNOS" resultMap="baseResultMap">
         SELECT *
@@ -67,12 +77,12 @@
         <foreach collection="bookNOS" item="bookNO" open="(" separator="," close=")">
             #{bookNO}
         </foreach>
-        ORDER BY borrow_date DESC;
+        AND status='超期' ORDER BY borrow_date DESC;
     </select>
     <select id="findOverTimeBorrowedBooksByBookNO" resultMap="baseResultMap">
         SELECT *
         FROM reader_book
-        WHERE bookNO = #{bookNO};
+        WHERE bookNO = #{bookNO} AND status = '超期';
     </select>
     <select id="findByCredNumAndBarCodeAndStatus" resultMap="baseResultMap">
         SELECT *
@@ -91,4 +101,30 @@
         ORDER BY borrow_date DESC
         LIMIT #{start}, #{itemCountEveryPage}
     </select>
+    <select id="findBorrowingCountByBookNO" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader_book
+        WHERE bookNO = #{bookNO} AND status IN ('超期', '续借中', '借阅中');
+    </select>
+    <select id="findBorrowingCountByBarCode" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader_book
+        WHERE barCode = #{barCode} AND status IN ('超期', '续借中', '借阅中');
+    </select>
+    <select id="getSpecifyBookBorrowCountByBarCode" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM reader_book
+        WHERE barCode = #{barCode}
+    </select>
+    <select id="findSpecifyBookBorrowHistoryByBarCode" resultMap="baseResultMap">
+        SELECT *
+        FROM reader_book
+        WHERE barCode = #{barCode}
+        ORDER BY borrow_date DESC
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <insert id="add">
+        INSERT INTO reader_book (cred_num, bookNO, return_date, borrow_date, status, barCode)
+        VALUES (#{credNum}, #{barCode}, #{bookNO}, #{returnDate}, #{borrowDate}, #{status});
+    </insert>
 </mapper>

@@ -1,6 +1,7 @@
 package librarySystem.util;
 
 import librarySystem.domain.Book;
+import librarySystem.domain.BookCLC;
 import librarySystem.domain.Reader;
 import librarySystem.domain.ReaderBook;
 import librarySystem.webDomain.ReaderBorrowHistory;
@@ -17,7 +18,7 @@ public class ReaderUtil {
         return (Reader) context.getAuthentication().getPrincipal();
     }
 
-    public static ReaderBorrowHistory extractBorrowHistory(ReaderBook readerBook, Book book) {
+    public static ReaderBorrowHistory extractBorrowHistory(ReaderBook readerBook, Book book, BookCLC bookCLC) {
         ReaderBorrowHistory history = new ReaderBorrowHistory();
         history.setBookNO(readerBook.getBookNO());
         history.setBarCode(readerBook.getBarCode());
@@ -28,7 +29,7 @@ public class ReaderUtil {
         history.setBookName(book.getBookName());
         history.setAuthor(book.getAuthor());
         history.setCnum(book.getCnum());
-        history.setStoreAddress(book.getStoreAddress());
+        history.setStoreAddress(bookCLC.getStoreAddress());
         return history;
     }
 }

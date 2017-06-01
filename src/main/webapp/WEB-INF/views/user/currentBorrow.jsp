@@ -47,7 +47,7 @@
     <table style="width: 80%;margin: 20px auto;" class="layui-table" lay-skin="line">
         <tr>
             <th>条形码</th>
-            <th>中图法编号</th>
+            <th>索书号</th>
             <th>书名</th>
             <th>作者</th>
             <th>借阅日期</th>

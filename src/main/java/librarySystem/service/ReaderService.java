@@ -9,21 +9,21 @@ import java.util.List;
 public interface ReaderService {
     Reader findByEmail(String email);
 
-    Reader findByCredNum(String credNum);
+    Reader findByCredNum(Integer credNum);
 
     void update(Reader reader);
 
-    List<ReaderBorrowHistory> getReaderBorrowHistory(String credNum,Integer pageNum,Integer itemNumEveryPage);
+    List<ReaderBorrowHistory> getReaderBorrowHistory(Integer credNum,Integer pageNum,Integer itemNumEveryPage);
 
-    List<ReaderBorrowHistory> findSpecifyReaderBorrowingBooks(String credNum);
+    List<ReaderBorrowHistory> findSpecifyReaderBorrowingBooks(Integer credNum);
 
     Integer getReaderPageNum(Integer itemCountEveryPage);
 
     List<Reader> findAllReaderInPagination(Integer pageNum, Integer itemCountEveryPage);
 
-    Integer getReaderPageNumByCredNum(String credNum,Integer itemCountEveryPage);
+    Integer getReaderPageNumByCredNum(Integer credNum,Integer itemCountEveryPage);
 
-    List<Reader> findReadersByCredNumInPagination(String credNum, Integer pageNum, Integer itemCountEveryPage);
+    List<Reader> findReadersByCredNumInPagination(Integer credNum, Integer pageNum, Integer itemCountEveryPage);
 
     Integer getReaderPageNumByName(String name, Integer itemCountEveryPage);
 
@@ -32,4 +32,6 @@ public interface ReaderService {
     Integer getReaderPageNumByEntryDate(Date entryDate, Integer itemCountEveryPage);
 
     List<Reader> findReadersByEntryDateInPagination(Date entryDate, Integer pageNum, Integer itemCountEveryPage);
+
+    void addReader(String name, String email,String readerType);
 }

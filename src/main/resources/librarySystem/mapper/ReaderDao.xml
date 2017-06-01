@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="librarySystem.dao.ReaderDao">
     <resultMap id="baseResultMap" type="librarySystem.domain.Reader">
-        <id column="cred_num" property="credNum" jdbcType="CHAR"/>
+        <id column="cred_num" property="credNum" jdbcType="BIGINT"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
         <result column="start_time" property="startTime" jdbcType="DATE"/>
@@ -13,12 +13,19 @@
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="current_borrow_num" property="currentBorrowNum" javaType="Integer" jdbcType="INTEGER"/>
     </resultMap>
+    <insert id="add">
+        INSERT INTO reader (cred_num, name, password, start_time, end_time, max_available, reader_type, cum_avail_num, email, current_borrow_num)
+        VALUES (#{reader.credNum}, #{reader.name}, #{reader.password}, #{reader.startTime}, #{reader.endTime},
+                #{reader.maxAvailable},
+                #{reader.readerType}, #{reader.cumAvailNum}, #{reader.email}, #{reader.currentBorrowNum})
+    </insert>
     <update id="update" parameterType="librarySystem.domain.Reader">
         UPDATE reader
-        SET name          = #{reader.name}, password = #{reader.password},
-            start_time    = #{reader.startTime}, end_time = #{reader.endTime},
-            max_available = #{reader.maxAvailable}, reader_type = #{reader.readerType},
-            cum_avail_num = #{reader.cumAvailNum}, email = #{reader.email},current_borrow_num=#{reader.currentBorrowNum}
+        SET name               = #{reader.name}, password = #{reader.password},
+            start_time         = #{reader.startTime}, end_time = #{reader.endTime},
+            max_available      = #{reader.maxAvailable}, reader_type = #{reader.readerType},
+            cum_avail_num      = #{reader.cumAvailNum}, email = #{reader.email},
+            current_borrow_num = #{reader.currentBorrowNum}
         WHERE cred_num = #{reader.credNum}
     </update>
     <select id="findByCredNum" resultMap="baseResultMap">
@@ -68,13 +75,17 @@
     <select id="getReaderNumByEntryDate" resultType="java.lang.Integer">
         SELECT count(*)
         FROM reader
-        WHERE start_time > #{entryDate}
+        WHERE start_time >= #{entryDate}
     </select>
     <select id="findByStartTime" resultMap="baseResultMap">
         SELECT *
         FROM reader
-        WHERE start_time > #{entryDate}
+        WHERE start_time >=  #{entryDate}
         ORDER BY start_time ASC
         LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="getMaxCredNum" resultType="java.lang.Integer">
+        SELECT max(cred_num)
+        FROM reader;
     </select>
 </mapper>

@@ -12,14 +12,20 @@
         <a href="javascript:;">借阅管理</a>
         <dl class="layui-nav-child">
             <dd><a href="${pageContext.request.contextPath}/book/overTimeBooks">超期未还图书</a></dd>
-            <dd><a href="">续借中的图书</a></dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="${pageContext.request.contextPath}/reader/allReader">用户管理</a></li>
+    <li class="layui-nav-item">
+        <a href="javascript:;">用户管理</a>
+        <dl class="layui-nav-child">
+            <dd><a href="${pageContext.request.contextPath}/reader/allReader">全部读者</a></dd>
+            <dd><a href="${pageContext.request.contextPath}/reader/newReader">读者录入</a></dd>
+        </dl>
+    </li>
     <li class="layui-nav-item">
         <a href="javascript:;">图书管理</a>
         <dl class="layui-nav-child">
             <dd><a href="${pageContext.request.contextPath}/book/allBook">查看书籍信息</a></dd>
+            <dd><a href="${pageContext.request.contextPath}/book/searchByBarCode">条形码查书</a></dd>
             <dd><a href="${pageContext.request.contextPath}/book/newBook">图书馆书籍入库</a></dd>
         </dl>
     </li>
@@ -35,7 +41,7 @@
             <div class="layui-input-inline">
                 <select name="searchType" lay-verify="required" lay-filter="selectSearchType" lay-search="">
                     <option value="bookName">书名</option>
-                    <option value="bookNO">中图法分类号</option>
+                    <option value="bookNO">索书号</option>
                     <option value="returnDate">应还日期</option>
                 </select>
             </div>
@@ -51,23 +57,18 @@
     </form>
 
     <table style="width: 90%;margin: 20px auto" class="layui-table" lay-skin="line">
-        <colgroup>
-            <col width="150">
-            <col width="150">
-            <col width="200">
-            <col>
-        </colgroup>
         <thead>
         <tr>
             <th>证件号</th>
             <th>条形码</th>
             <th>书名</th>
-            <th>中图法分类号</th>
+            <th>索书号</th>
             <th>借阅日期</th>
             <th>应还日期</th>
             <th>馆藏地</th>
             <th>状态</th>
             <th>催还</th>
+            <th>确认归还</th>
         </tr>
         </thead>
         <tbody id="historyItems">
@@ -106,6 +107,31 @@
         return fmt;
     };
     var layer;
+
+    function returnBook(barCode, credNum, btn) {
+        if (confirm("确认归还吗？")) {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/readerBook/returnBook",
+                data: "barCode=" + barCode + "&credNum=" + credNum,
+                method: "post",
+                success: function (response) {
+                    var message = response.message;
+                    if (message === "ok") {
+                        layer.msg("已归还", {icon: 1});
+                        $(btn).text("已归还");
+                        $(btn).css("background-color", "#ff4646")
+                        $(btn).unbind("click", returnBook);
+                    } else if (message === "error") {
+                        layer.msg("归还失败", {icon: 5});
+                    }
+                },
+                error: function () {
+                    layer.msg("归还失败", {icon: 5});
+                }
+            });
+        }
+    }
+
     //分页获取数据
     function loadHistory(pageNum) {
         $.ajax({
@@ -128,6 +154,7 @@
                         var td6 = $("<td>" + history.storeAddress + "</td>");
                         var td7 = $("<td>" + history.status + "</td>");
                         var td8 = $("<td><button onclick='reminder(" + history.credNum + ",\"" + history.bookName + "\")'class='layui-btn layui-btn-danger'>催还</button></td>");
+                        var td9 = $("<td><button onclick='returnBook(\"" + history.barCode + "\",\"" + history.credNum + "\",this)'class='layui-btn layui-btn-normal'>确认归还</button></td>");
                         td.appendTo(tr);
                         td0.appendTo(tr);
                         td2.appendTo(tr);
@@ -137,6 +164,7 @@
                         td6.appendTo(tr);
                         td7.appendTo(tr);
                         td8.appendTo(tr);
+                        td9.appendTo(tr);
                         tr.appendTo($("#historyItems"));
                     }
                 } else if (message === "error") {
@@ -163,7 +191,7 @@
                     for (var i = 0; i < historyList.length; i++) {
                         var history = historyList[i];
                         var tr = $("<tr></tr>");
-                        var td = $("<td>" + history.credNum + "</td>")
+                        var td = $("<td>" + history.credNum + "</td>");
                         var td0 = $("<td>" + (history.barCode) + "</td>");
                         var td1 = $("<td>" + (history.cnum + history.bookNO) + "</td>");
                         var td2 = $("<td>" + history.bookName + "</td>");

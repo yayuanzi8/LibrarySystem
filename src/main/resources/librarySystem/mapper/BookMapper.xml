@@ -4,18 +4,56 @@
 <mapper namespace="librarySystem.dao.BookDao">
     <resultMap id="baseResultMap" type="librarySystem.domain.Book">
         <id column="bookNO" property="bookNO" jdbcType="VARCHAR"/>
+        <result column="bookId" property="bookId" jdbcType="BIGINT"/>
+        <result column="ISBN" property="ISBN" jdbcType="VARCHAR"/>
         <result column="bookName" property="bookName" jdbcType="VARCHAR"/>
+        <result column="subHead" property="subHead" jdbcType="VARCHAR"/>
         <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="author_desc" property="authorDesc" jdbcType="VARCHAR"/>
         <result column="press" property="press" jdbcType="VARCHAR"/>
+        <result column="pressYear" property="pressYear" jdbcType="VARCHAR"/>
         <result column="translator" property="translator" jdbcType="VARCHAR"/>
         <result column="book_desc" property="bookDesc" jdbcType="VARCHAR"/>
         <result column="page_num" property="pageNum"/>
         <result column="book_image" property="bookImage" jdbcType="VARCHAR"/>
         <result column="book_type" property="bookType" jdbcType="VARCHAR"/>
-        <result column="store_addr" property="storeAddress" jdbcType="VARCHAR"/>
         <result column="cnum" property="cnum" jdbcType="CHAR"/>
         <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="searchNum" property="searchNum" jdbcType="INTEGER"/>
+        <result column="borrowNum" property="borrowNum" jdbcType="INTEGER"/>
+        <result column="score" property="score" jdbcType="VARCHAR"/>
+        <result column="scoreNumber" property="scoreNum" jdbcType="INTEGER"/>
+        <result column="storeNumber" property="storeNumber" jdbcType="VARCHAR"/>
+        <result column="borrowNumber" property="borrowNumber" jdbcType="VARCHAR"/>
+        <result column="addTime" property="addTime" jdbcType="DATE"/>
+        <result column="short_catalog" property="shortCatalog" jdbcType="LONGVARCHAR"/>
+        <result column="long_catalog" property="longCatalog" jdbcType="LONGVARCHAR"/>
     </resultMap>
+    <insert id="save">
+        INSERT INTO book (bookNO, bookName, author, press, translator, book_desc, page_num, book_type, cnum, price, book_image, ISBN, subHead, author_desc, pressYear, searchNum, borrowNum, score, scoreNumber, storeNumber, borrowNumber, addTime, short_catalog, long_catalog)
+        VALUES (#{book.bookNO}, #{book.bookName}, #{book.author}, #{book.press}, #{book.translator}, #{book.bookDesc},
+                                #{book.pageNum}, #{book.bookType}, #{book.storeAddress},
+                                #{book.cnum}, #{book.price}, #{book.bookImage}, #{book.ISBN}, #{book.subHead},
+                                                             #{book.authorDesc}, #{book.pressYear}, #{book.searchNum},
+                                                             #{book.borrowNum}, #{book.score}, #{book.scoreNum},
+                                                             #{book.storeNumber}, #{book.borrowNumber}, #{book.addTime},
+                #{book.shortCatalog}, #{book.longCatalog})
+    </insert>
+    <update id="update">
+        UPDATE book
+        SET bookName      = #{book.bookName}, author = #{book.author}, press = #{book.press},
+            translator    = #{book.translator},
+            book_desc     = #{book.bookDesc}, page_num = #{book.pageNum}, book_type = #{book.bookType},
+            store_addr    = #{book.storeAddress},
+            cnum          = #{book.cnum}, price = #{book.price}, book_image = #{book.bookImage}, ISBN = #{book.ISBN},
+            subHead       = #{book.subHead}, author_desc = #{book.authorDesc}, pressYear = #{book.pressYear},
+            short_catalog = #{book.shortCatalog}, long_catalog = #{book.longCatalog}
+        WHERE bookNO = #{book.bookNO}
+    </update>
+    <delete id="deleteByBookNO">
+        DELETE FROM book
+        WHERE bookNO = #{bookNO}
+    </delete>
 
     <select id="getAllBooks" resultMap="baseResultMap">
         SELECT *
@@ -40,5 +78,148 @@
         FROM book
         ORDER BY bookName
         LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="getBookCountByBookName" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM book
+        WHERE bookName LIKE CONCAT('%', #{bookName}, '%')
+    </select>
+    <select id="getBookCountByBookNO" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM book
+        WHERE bookNO = #{bookNO}
+    </select>
+    <select id="getBookCountByAuthor" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM book
+        WHERE author LIKE CONCAT('%', #{author}, '%')
+    </select>
+    <select id="getBookCountByPress" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM book
+        WHERE press LIKE CONCAT('%', #{press}, '%')
+    </select>
+    <select id="findByBookNameInPagination" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookName LIKE CONCAT('%', #{bookName}, '%')
+        ORDER BY bookName
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="findByAuthorInPagination" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE author LIKE CONCAT('%', #{author}, '%')
+        ORDER BY author
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="findByPressInPagination" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE press LIKE CONCAT('%', #{press}, '%')
+        ORDER BY press
+        LIMIT #{start}, #{itemCountEveryPage}
+    </select>
+    <select id="findBooksByName" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookName LIKE CONCAT('%', #{searchWords}, '%')
+    </select>
+
+    <select id="findBooksByNameAndType" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookName LIKE CONCAT('%', #{searchWords}, '%') AND book_type = #{type}
+    </select>
+
+    <select id="findBooksByAuthor" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE author LIKE CONCAT('%', #{searchWords}, '%')
+    </select>
+
+    <select id="findBooksByAuthorAndType" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE author LIKE CONCAT('%', #{searchWords}, '%') AND book_type = #{type}
+    </select>
+
+    <select id="findBooksByNO" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookNO LIKE CONCAT('%', #{searchWords}, '%')
+    </select>
+
+    <select id="findBooksByNOAndType" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookNO LIKE CONCAT('%', #{searchWords}, '%') AND book_type = #{type}
+    </select>
+
+    <select id="findBooksByPress" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE press LIKE CONCAT('%', #{searchWords}, '%')
+    </select>
+
+    <select id="findBooksByPressAndType" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE press LIKE CONCAT('%', #{searchWords}, '%') AND book_type = #{type}
+    </select>
+
+    <select id="findBorrowNumAndOrder" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY borrowNum DESC
+    </select>
+
+    <select id="findSearchNumAndOrder" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY searchNum DESC
+    </select>
+
+    <select id="orderAddTime" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY ADDTIME DESC;
+    </select>
+
+    <select id="orderByBorrowNum" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY borrowNum DESC;
+    </select>
+
+    <select id="orderByScore" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        ORDER BY score DESC;
+    </select>
+
+    <select id="findOtherBooksByAuthor" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE author = #{author};
+    </select>
+
+    <select id="findSimilarBooksByCnum" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE cnum = #{cnum}
+        ORDER BY borrowNum DESC;
+    </select>
+
+    <select id="findBookByBookNO" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookNO = #{bookNO}
+    </select>
+
+    <select id="findBookByBookId" resultMap="baseResultMap">
+        SELECT *
+        FROM book
+        WHERE bookId = #{id};
     </select>
 </mapper>

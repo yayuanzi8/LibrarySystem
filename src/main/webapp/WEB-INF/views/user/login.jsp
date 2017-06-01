@@ -109,10 +109,7 @@
                     }
                 },
                 error: function () {
-                    layer.open({
-                        title: '错误',
-                        content: '出现未知错误！'
-                    });
+                    window.location.href = "${pageContext.request.contextPath}/reader/" + dataJson.cred_num;
                 }
             });
             return false;

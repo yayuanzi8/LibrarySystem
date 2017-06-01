@@ -3,7 +3,7 @@
 <mapper namespace="librarySystem.dao.ReaderPermissionDao">
     <resultMap id="baseResultMap" type="librarySystem.domain.ReaderPermission">
         <id property="pid" jdbcType="INTEGER" column="pid"/>
-        <id property="credNum" column="cred_num" jdbcType="CHAR"/>
+        <id property="credNum" column="cred_num" jdbcType="BIGINT"/>
     </resultMap>
     <select id="findByCredNum" resultType="librarySystem.domain.ReaderPermission">
         SELECT *

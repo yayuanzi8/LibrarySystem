@@ -3,12 +3,21 @@ package librarySystem.domain;
 import java.util.Date;
 
 public class ReaderBook {
-    private String credNum;
+    private Integer rbId;
+    private Integer credNum;
     private String barCode;
     private Date returnDate;
     private Date borrowDate;
     private String status;
     private String bookNO;
+
+    public Integer getRbId() {
+        return rbId;
+    }
+
+    public void setRbId(Integer rbId) {
+        this.rbId = rbId;
+    }
 
     public String getBookNO() {
         return bookNO;
@@ -18,11 +27,11 @@ public class ReaderBook {
         this.bookNO = bookNO;
     }
 
-    public String getCredNum() {
+    public Integer getCredNum() {
         return credNum;
     }
 
-    public void setCredNum(String credNum) {
+    public void setCredNum(Integer credNum) {
         this.credNum = credNum;
     }
 

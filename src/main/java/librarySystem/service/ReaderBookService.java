@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReaderBookService {
-    Integer findPageNumByCredNum(String credNum,Integer itemNumEveryPage);
+    Integer findPageNumByCredNum(Integer credNum, Integer itemNumEveryPage);
 
-    void renew(String credNum, String barCode);
+    void renew(Integer credNum, String barCode);
 
     Integer findOverTimeBorrowedBooks(Integer itemNumEveryPage);
 
@@ -26,9 +26,18 @@ public interface ReaderBookService {
 
     List<ReaderBorrowHistory> getOverTimeBooksByReturnDate(Date returnDate, Integer pageNum, Integer itemCountEveryPage);
 
-    void returnBook(String credNum, String barCode) throws Exception;
+    void returnBook(Integer credNum, String barCode) throws Exception;
 
     Integer getSpecifyBookBorrowPageNum(String bookNO, Integer itemCountEveryPage);
 
     List<ReaderBorrowHistory> findSpecifyBookBorrowHistory(String bookNO, Integer pageNum, Integer itemCountEveryPage);
+
+    Integer getSpecifyBookBorrowPageNumByBarCode(String barCode, Integer itemCountEveryPage);
+
+    List<ReaderBorrowHistory> findSpecifyBookBorrowHistoryByBarCode(String barCode, Integer pageNum, Integer itemCountEveryPage);
+
+    //蔡越
+    void add(Integer credNum, String barCode, String bookNO, Date borrowDate, Date borrowDate1, String status);
+
+    void borrowBook(Integer credNum, String barCode, String bookNO, Date returnDate, Date borrowDate, String status);
 }

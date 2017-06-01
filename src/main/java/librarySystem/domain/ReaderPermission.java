@@ -2,7 +2,7 @@ package librarySystem.domain;
 
 public class ReaderPermission {
     private Integer pid;
-    private String credNum;
+    private Integer credNum;
 
     public Integer getPid() {
         return pid;
@@ -12,11 +12,11 @@ public class ReaderPermission {
         this.pid = pid;
     }
 
-    public String getCredNum() {
+    public Integer getCredNum() {
         return credNum;
     }
 
-    public void setCredNum(String credNum) {
+    public void setCredNum(Integer credNum) {
         this.credNum = credNum;
     }
 }

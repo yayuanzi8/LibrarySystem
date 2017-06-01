@@ -28,15 +28,15 @@ public class ReaderDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cred_num) throws UsernameNotFoundException {
-        Reader reader = readerDao.findByCredNum(cred_num);
+        Reader reader = readerDao.findByCredNum(Integer.parseInt(cred_num));
         if (reader == null)
             throw new UsernameNotFoundException("用户名或密码错误！");
-        Set<? extends GrantedAuthority> authorities = getAuthorities(reader.getCredNum());
+        Set<? extends GrantedAuthority> authorities = getAuthorities(Integer.parseInt(cred_num));
         reader.setAuthorities(authorities);
         return reader;
     }
 
-    private Set<? extends GrantedAuthority> getAuthorities(String credNum) {
+    private Set<? extends GrantedAuthority> getAuthorities(Integer credNum) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         List<ReaderPermission> readerPermissionList = readerPermissionDao.findByCredNum(credNum);
         for (ReaderPermission readerPermission : readerPermissionList) {

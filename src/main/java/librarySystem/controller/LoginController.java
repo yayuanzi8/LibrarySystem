@@ -3,6 +3,7 @@ package librarySystem.controller;
 import librarySystem.util.CodeUtil;
 import librarySystem.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,8 +48,10 @@ public class LoginController {
         if (message.equals("Bad credentials")){
             message = "用户名或密码错误";
         }
+        if (message.equals("Maximum sessions of 1 for this principal exceeded")){
+            message = "已有其他用户登陆！";
+        }
         map.put("details",message);
-        System.out.println(message);
         return map;
     }
 

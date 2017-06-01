@@ -5,4 +5,7 @@
         <id property="cnum" column="cnum" jdbcType="CHAR"/>
         <result column="cname" property="cname" jdbcType="VARCHAR"/>
     </resultMap>
+    <select id="findByCNum" resultMap="baseResultMap">
+        select * from book_class where cnum = #{cnum}
+    </select>
 </mapper>

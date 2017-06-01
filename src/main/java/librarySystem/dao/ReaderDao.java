@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReaderDao {
-    Reader findByCredNum(@Param("cred_num") String cred_num);
+    Reader findByCredNum(@Param("cred_num") Integer cred_num);
 
     Reader findByEmail(@Param("email") String email);
 
@@ -17,9 +17,9 @@ public interface ReaderDao {
 
     List<Reader> findAll(@Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
 
-    Integer getReaderNumByCredNum(@Param("credNum") String credNum);
+    Integer getReaderNumByCredNum(@Param("credNum") Integer credNum);
 
-    List<Reader> findByCredNumHazily(@Param("credNum") String credNum, @Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
+    List<Reader> findByCredNumHazily(@Param("credNum") Integer credNum, @Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
 
     Integer getReaderNumByName(@Param("name") String name);
 
@@ -28,4 +28,8 @@ public interface ReaderDao {
     Integer getReaderNumByEntryDate(Date entryDate);
 
     List<Reader> findByStartTime(@Param("entryDate") Date entryDate, @Param("start") Integer start, @Param("itemCountEveryPage") Integer itemCountEveryPage);
+
+    Integer getMaxCredNum();
+
+    void add(@Param("reader") Reader reader);
 }

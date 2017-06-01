@@ -4,6 +4,7 @@ import librarySystem.service.ReaderBookService;
 import librarySystem.util.Result;
 import librarySystem.webDomain.ReaderBorrowHistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,7 @@ public class ReaderBookController {
         formatter = new SimpleDateFormat("yyyy-MM-dd");
     }
 
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
     @RequestMapping(value = "/searchOverTimeBooks", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> searchOverTimeBooks(@RequestParam("searchType") String searchType, @RequestParam("searchValue") String searchValue, @RequestParam("pageNum") Integer pageNum) {
@@ -62,9 +64,10 @@ public class ReaderBookController {
         }
     }
 
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
     @RequestMapping(value = "/returnBook", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, Object> returnBook(@RequestParam("barCode") String barCode, @RequestParam("credNum") String credNum) {
+    Map<String, Object> returnBook(@RequestParam("barCode") String barCode, @RequestParam("credNum") Integer credNum) {
         try {
             readerBookService.returnBook(credNum, barCode);
             return Result.ok();
@@ -73,6 +76,7 @@ public class ReaderBookController {
         }
     }
 
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
     @RequestMapping(value = "/loadBookBorrowHistoryPageNum", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> loadBookBorrowHistoryPageNum(@RequestParam("bookNO") String bookNO) {
@@ -86,6 +90,7 @@ public class ReaderBookController {
         }
     }
 
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
     @RequestMapping(value = "/loadBookBorrowHistory", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> loadBookBorrowHistory(@RequestParam("bookNO") String bookNO, @RequestParam("pageNum") Integer pageNum) {
@@ -98,4 +103,32 @@ public class ReaderBookController {
             return Result.error();
         }
     }
+
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
+    @RequestMapping(value = "/loadBookBorrowHistoryPageNumByBarCode",method = RequestMethod.POST)
+    public @ResponseBody Map<String,Object> loadBookBorrowHistoryPageNumByBarCode(@RequestParam("barCode") String barCode){
+        try {
+            Integer totalPage = readerBookService.getSpecifyBookBorrowPageNumByBarCode(barCode, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("totalPage", totalPage);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
+    @PreAuthorize("isAuthenticated() && hasAuthority('reader:admin')")
+    @RequestMapping(value = "/loadBookBorrowHistoryByBarCode", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> loadBookBorrowHistoryByBarCode(@RequestParam("barCode") String barCode, @RequestParam("pageNum") Integer pageNum) {
+        try {
+            List<ReaderBorrowHistory> historyList = readerBookService.findSpecifyBookBorrowHistoryByBarCode(barCode, pageNum, 20);
+            Map<String, Object> map = Result.ok();
+            map.put("historyList", historyList);
+            return map;
+        } catch (Exception e) {
+            return Result.error();
+        }
+    }
+
 }

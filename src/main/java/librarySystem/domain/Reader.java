@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Set;
 
 public class Reader implements UserDetails {
-    private String credNum;
+    private Integer credNum;
     private String name;
     private String password;
     private Date startTime;
@@ -18,7 +18,7 @@ public class Reader implements UserDetails {
     private Integer cumAvailNum;
     private String email;
     private Integer currentBorrowNum;
-    private Set<? extends  GrantedAuthority> authorities;
+    private Set<? extends GrantedAuthority> authorities;
 
     public Integer getCurrentBorrowNum() {
         return currentBorrowNum;
@@ -28,11 +28,11 @@ public class Reader implements UserDetails {
         this.currentBorrowNum = currentBorrowNum;
     }
 
-    public String getCredNum() {
+    public Integer getCredNum() {
         return credNum;
     }
 
-    public void setCredNum(String credNum) {
+    public void setCredNum(Integer credNum) {
         this.credNum = credNum;
     }
 
@@ -59,7 +59,7 @@ public class Reader implements UserDetails {
 
     @Override
     public String getUsername() {
-        return credNum;
+        return credNum + "";
     }
 
     @Override
@@ -132,5 +132,25 @@ public class Reader implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reader reader = (Reader) o;
+
+        if (credNum != null ? !credNum.equals(reader.credNum) : reader.credNum != null) return false;
+        if (name != null ? !name.equals(reader.name) : reader.name != null) return false;
+        return password != null ? password.equals(reader.password) : reader.password == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = credNum != null ? credNum.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
     }
 }

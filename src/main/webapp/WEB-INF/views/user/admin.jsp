@@ -7,18 +7,24 @@
 <body>
 <div style="background: url('${pageContext.request.contextPath}/static/images/library.jpg');height: 30%"></div>
 <ul class="layui-nav">
-    <li class="layui-nav-item layui-this">
+    <li class="layui-nav-item">
         <a href="javascript:;">借阅管理</a>
         <dl class="layui-nav-child">
             <dd><a href="${pageContext.request.contextPath}/book/overTimeBooks">超期未还图书</a></dd>
-            <dd><a href="">续借中的图书</a></dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="${pageContext.request.contextPath}/reader/allReader">用户管理</a></li>
+    <li class="layui-nav-item">
+        <a href="javascript:;">用户管理</a>
+        <dl class="layui-nav-child">
+            <dd><a href="${pageContext.request.contextPath}/reader/allReader">全部读者</a></dd>
+            <dd><a href="${pageContext.request.contextPath}/reader/newReader">读者录入</a></dd>
+        </dl>
+    </li>
     <li class="layui-nav-item">
         <a href="javascript:;">图书管理</a>
         <dl class="layui-nav-child">
             <dd><a href="${pageContext.request.contextPath}/book/allBook">查看书籍信息</a></dd>
+            <dd><a href="${pageContext.request.contextPath}/book/searchByBarCode">条形码查书</a></dd>
             <dd><a href="${pageContext.request.contextPath}/book/newBook">图书馆书籍入库</a></dd>
         </dl>
     </li>

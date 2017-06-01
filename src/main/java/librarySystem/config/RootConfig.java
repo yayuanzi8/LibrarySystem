@@ -10,7 +10,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
@@ -19,9 +21,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
+@EnableTransactionManagement
 @ComponentScan(basePackages = {"librarySystem"}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,
         value = EnableWebMvc.class), @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)})
 @PropertySource(value = "classpath:db.properties")
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true,proxyTargetClass = true)
 public class RootConfig {
     @Bean(destroyMethod = "close")
     public DataSource dataSource(Environment env) {
